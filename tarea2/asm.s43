@@ -1,0 +1,160 @@
+#include "msp430.h"                     ; #define controlled include file
+
+        NAME    main                    ; module name
+
+        PUBLIC  main                    ; make the main label vissible
+
+        ORG     0x1C00
+setUpPorts:
+pos1	equ	9      ; Aplhanumeric A1 begins at S18
+pos2	equ	5      ; Aplhanumeric A2 begins at S10
+pos3 	equ	3      ; Aplhanumeric A3 begins at S6
+pos4 	equ	18     ; Aplhanumeric A4 begins at S36
+pos5	equ	14     ; Aplhanumeric A5 begins at S28
+pos6 	equ	7      ; Aplhanumeric A6 begins at S14
+
+;Define high and low byte values to generate chars J, N, F
+;JNF           B    R    Y   A    N
+bryanH	db 0xF1,0xC1,0x00,0xEF,0x6C
+bryanL	db 0x50,0x52,0xB0,0x00,0x82          ;  N 0x6C,0x82
+
+
+                                        ; outside this module
+        ORG     0FFFEh
+        DC16    init                    ; set reset vector to 'init' label
+
+        RSEG    CSTACK                  ; pre-declaration of segment
+        RSEG    CODE                    ; place program in 'CODE' segment
+        
+
+init:   MOV     #SFE(CSTACK), SP        ; set up stack
+main:   NOP
+        ;Initialize LCD segments 0 - 21; 26 - 43
+	MOV.W   #0xFFFF,&LCDCPCTL0
+	MOV.W   #0xfc3f,&LCDCPCTL1
+    	MOV.W   #0x0fff,&LCDCPCTL2
+setUpP1:
+        bic.b   #0xFF,&P1SEL0           ; Set PxSel0 and PxSel1 to digital I/O
+        bic.b   #0xFF,&P1SEL1           ; Digital I/O is the default
+        bic.b   #0xFF,&P9SEL0
+        bic.b   #0xFF,&P9SEL1
+        
+        mov.b   #11111001B,&P1DIR       ; Set P1.1 and P1.2 for input and all
+                                        ; other P1 pins for output
+        
+        bis.b   #0xFF,&P9DIR            ; Set all P9 pins for output
+
+        mov.b   #00000110B,&P1REN        ; Activate P1.1 and P1.2 programable
+                                        ; pull-up/pull-down resistors
+        bis.b   #00000110B,&P1OUT       ; Set resistors for P1.1 and P1.2 as
+                                        ; as pull-down
+        bic.b   #0x01,&P1OUT            ; Clear P1.0 and P9.7 output latch to
+        bic.b   #0x80,&P9OUT
+
+UnlockGPIO:
+        bic.w   #LOCKLPM5,&PM5CTL0      ; Disable the GPIO power-on default
+                                        ; high-impedance mode to activate
+                                        ; previously configured port settings
+
+	;Initialize LCD_C
+    	;ACLK, Divider = 1, Pre-divider = 16; 4-pin MUX
+	MOV.W   #0x041e,&LCDCCTL0
+
+    	;VLCD generated internally,
+    	;V2-V4 generated internally, v5 to ground
+    	;Set VLCD voltage to 2.60v
+    	;Enable charge pump and select internal reference for it
+    	MOV.W   #0x0208,&LCDCVCTL
+
+	MOV.W   #0x8000,&LCDCCPCTL   ;Clock synchronization enabled
+
+	MOV.W   #2,&LCDCMEMCTL       ;Clear LCD memory
+
+	;Turn LCD on
+	BIS.W   #1,&LCDCCTL0
+        
+        mov.b    #0,R6
+        mov.b    #0,R5
+        
+MainLoop:
+        MOV.B   #pos1,R14
+        
+  	MOV.B   #0x9C,0x0a20(R14)
+	MOV.B   #0x00,0x0a20+1(R14)
+
+	MOV.B   #pos2,R14
+        
+  	MOV.B   #0xC1,0x0a20(R14)
+	MOV.B   #0x50,0x0a20+1(R14)
+
+	MOV.B   #pos3,R14
+        
+  	MOV.B   #0x7C,0x0a20(R14)
+	MOV.B   #0x00,0x0a20+1(R14)
+        
+        MOV.B   #pos4,R14
+        
+        MOV.B   #0xC1,0x0a20(R14)
+	MOV.B   #0x52,0x0a20+1(R14)
+        
+        MOV.B   #pos5,R14
+        
+        MOV.B   #0x7C,0x0a20(R14)
+	MOV.B   #0x00,0x0a20+1(R14)
+        
+        MOV.B   #pos6,R14
+        
+        MOV.B   #0x6C,0x0a20(R14)
+	MOV.B   #0xA0,0x0a20+1(R14)
+checkPressed:
+        mov.b   &P1IN,R5
+        and.b   #00000110B,R5
+        cmp.b   #00000010B,R5
+        jeq     nameCounter
+test:
+        cmp.b   #00000001B,R6
+        jeq     bryanName
+        
+        
+        jmp     checkPressed
+        
+nameCounter:
+        inc     R6
+        jmp     test
+        
+bryanName:
+	;Write Bryan on display's A1-A6 Alphanumeric chars
+	MOV.B   #pos1,R14
+	MOV.B	#0,R5
+  	MOV.B   bryanH(R5),0x0a20(R14)
+	MOV.B   bryanL(R5),0x0a20+1(R14)
+
+	MOV.B   #pos2,R14
+	MOV.B	#1,R5
+  	MOV.B   bryanH(R5),0x0a20(R14)
+	MOV.B   bryanL(R5),0x0a20+1(R14)
+
+	MOV.B   #pos3,R14
+	MOV.B	#2,R5
+  	MOV.B   bryanH(R5),0x0a20(R14)
+	MOV.B   bryanL(R5),0x0a20+1(R14)
+        
+        MOV.B   #pos4,R14
+        MOV.B   #3,R5
+        MOV.B   bryanH(R5),0x0a20(R14)
+	MOV.B   bryanL(R5),0x0a20+1(R14)
+        
+        MOV.B   #pos5,R14
+        MOV.B   #4,R5
+        MOV.B   bryanH(R5),0x0a20(R14)
+	MOV.B   bryanL(R5),0x0a20+1(R14)
+        
+        MOV.B   #pos6,R14
+        
+        MOV.B   #0x00,0x0a20(R14)
+	MOV.B   #0x00,0x0a20+1(R14)
+        jmp     checkPressed
+	JMP	$
+	nop
+                ; (endless loop)
+        END
