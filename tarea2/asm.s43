@@ -14,9 +14,24 @@ pos5	equ	14     ; Aplhanumeric A5 begins at S28
 pos6 	equ	7      ; Aplhanumeric A6 begins at S14
 
 ;Define high and low byte values to generate chars J, N, F
-;JNF           B    R    Y   A    N
-bryanH	db 0xF1,0xC1,0x00,0xEF,0x6C
-bryanL	db 0x50,0x52,0xB0,0x00,0x82          ;  N 0x6C,0x82
+;JNF          A   B    D
+letra1H db 0xEF,0xF1,0xF0
+letra1L	db 0x00,0x50,0x50        ;  N 0x6C,0x82
+            ; N   R    E
+letra2H db 0x6C,0xC1,0x9F
+letra2L	db 0x82,0x52,0x00
+            ; G   Y    V 
+letra3H db 0xBD,0x00,0x60
+letra3L	db 0x00,0xB0,0x82
+            ; E   A    A
+letra4H db 0x9F,0xEF,0xEF
+letra4L	db 0x00,0x00,0x00
+            ; L   N    N 
+letra5H db 0x1C,0x6C,0x6C
+letra5L	db 0x00,0x82,0x82
+           ;" "  " "  " "
+letra6H db 0x00,0x00,0x00
+letra6L	db 0x00,0x00,0x00
 
 
                                         ; outside this module
@@ -72,9 +87,7 @@ UnlockGPIO:
 
 	;Turn LCD on
 	BIS.W   #1,&LCDCCTL0
-        
-        mov.b    #0,R6
-        mov.b    #0,R5
+        MOV.B   #0,R6
         
 MainLoop:
         MOV.B   #pos1,R14
@@ -110,49 +123,52 @@ checkPressed:
         mov.b   &P1IN,R5
         and.b   #00000110B,R5
         cmp.b   #00000010B,R5
-        jeq     nameCounter
-test:
-        cmp.b   #00000001B,R6
-        jeq     bryanName
-        
+        jeq     memberNames
         
         jmp     checkPressed
+resetName:
+        MOV.B   #0,R6
+        jmp     checkPressed
         
-nameCounter:
-        inc     R6
-        jmp     test
-        
-bryanName:
+memberNames:
 	;Write Bryan on display's A1-A6 Alphanumeric chars
+        
+        bis.b   #10000000B,&P9OUT
 	MOV.B   #pos1,R14
-	MOV.B	#0,R5
-  	MOV.B   bryanH(R5),0x0a20(R14)
-	MOV.B   bryanL(R5),0x0a20+1(R14)
+	;MOV.B	#0,R5
+  	MOV.B   letra1H(R6),0x0a20(R14)
+	MOV.B   letra1L(R6),0x0a20+1(R14)
 
 	MOV.B   #pos2,R14
-	MOV.B	#1,R5
-  	MOV.B   bryanH(R5),0x0a20(R14)
-	MOV.B   bryanL(R5),0x0a20+1(R14)
+	;MOV.B	#0,R5
+  	MOV.B   letra2H(R6),0x0a20(R14)
+	MOV.B   letra2L(R6),0x0a20+1(R14)
 
 	MOV.B   #pos3,R14
-	MOV.B	#2,R5
-  	MOV.B   bryanH(R5),0x0a20(R14)
-	MOV.B   bryanL(R5),0x0a20+1(R14)
+	;MOV.B	#0,R5
+  	MOV.B   letra3H(R6),0x0a20(R14)
+	MOV.B   letra3L(R6),0x0a20+1(R14)
         
         MOV.B   #pos4,R14
-        MOV.B   #3,R5
-        MOV.B   bryanH(R5),0x0a20(R14)
-	MOV.B   bryanL(R5),0x0a20+1(R14)
+	;MOV.B	#0,R5
+  	MOV.B   letra4H(R6),0x0a20(R14)
+	MOV.B   letra4L(R6),0x0a20+1(R14)
         
         MOV.B   #pos5,R14
-        MOV.B   #4,R5
-        MOV.B   bryanH(R5),0x0a20(R14)
-	MOV.B   bryanL(R5),0x0a20+1(R14)
+	;MOV.B	#0,R5
+  	MOV.B   letra5H(R6),0x0a20(R14)
+	MOV.B   letra5L(R6),0x0a20+1(R14)
         
         MOV.B   #pos6,R14
+	;MOV.B	#0,R5
+  	MOV.B   letra6H(R6),0x0a20(R14)
+	MOV.B   letra6L(R6),0x0a20+1(R14)
         
-        MOV.B   #0x00,0x0a20(R14)
-	MOV.B   #0x00,0x0a20+1(R14)
+        bic.b   #10000000B,&P9OUT
+        inc     R6
+        cmp.b   #0x0003,R6
+        jeq     resetName
+        
         jmp     checkPressed
 	JMP	$
 	nop
