@@ -1,24 +1,24 @@
 ###############################################################################
 #
-# IAR UBROF Linker V10.12.4.1422                          27/Mar/2023  23:06:51
+# IAR UBROF Linker V10.12.4.1422                          10/Apr/2023  14:12:50
 # Copyright 1987-2022 IAR Systems AB.
 #
 #    Target Cpu    =  MSP430
 #    Map file      =
-#        C:\Users\vegag\OneDrive\Documentos\MSP430\tarea2\Debug\List\tarea2.map
+#        C:\Users\devan\OneDrive\Desktop\school\Arqui2\ARQUI-Project2-names\tarea2\Debug\List\tarea2.map
 #    Output file 1 =
-#        C:\Users\vegag\OneDrive\Documentos\MSP430\tarea2\Debug\Exe\tarea2.d43
+#        C:\Users\devan\OneDrive\Desktop\school\Arqui2\ARQUI-Project2-names\tarea2\Debug\Exe\tarea2.d43
 #                  =  Format: debug
 #                  =  UBROF version 11.1.1
 #                  =  Using library modules for C-SPY (-rt)
 #    Command line  =
 #        -f
-#        C:\Users\vegag\OneDrive\Documentos\MSP430\tarea2\Debug\Exe\tarea2.d43.rsp
-#        (C:\Users\vegag\OneDrive\Documentos\MSP430\tarea2\Debug\Obj\asm.r43
+#        C:\Users\devan\OneDrive\Desktop\school\Arqui2\ARQUI-Project2-names\tarea2\Debug\Exe\tarea2.d43.rsp
+#        (C:\Users\devan\OneDrive\Desktop\school\Arqui2\ARQUI-Project2-names\tarea2\Debug\Obj\asm.r43
 #        --output
-#        C:\Users\vegag\OneDrive\Documentos\MSP430\tarea2\Debug\Exe\tarea2.d43
+#        C:\Users\devan\OneDrive\Desktop\school\Arqui2\ARQUI-Project2-names\tarea2\Debug\Exe\tarea2.d43
 #        -l
-#        C:\Users\vegag\OneDrive\Documentos\MSP430\tarea2\Debug\List\tarea2.map
+#        C:\Users\devan\OneDrive\Desktop\school\Arqui2\ARQUI-Project2-names\tarea2\Debug\List\tarea2.map
 #        -xams "-IC:\Program Files\IAR Systems\Embedded Workbench
 #        9.1\430\LIB\\" --f "C:\Program Files\IAR Systems\Embedded Workbench
 #        9.1\430\config\linker\lnk430fr6989.xcl" (-cmsp430 -QCODE_I=CODE_ID
@@ -89,19 +89,34 @@ _DATA16_HEAP_SIZE          0x00A0  Pub         ?ABS_ENTRY_MOD [1]
 _STACK_SIZE                0x00A0  Pub         ?ABS_ENTRY_MOD [1]
 __iar_HWMUL                0x04C0  Pub         ?ABS_ENTRY_MOD [1]
 setUpPorts                 0x1C00  Loc         main [0]
-bryanH                     0x1C00  Loc         main [0]
-bryanL                     0x1C05  Loc         main [0]
+instr                      0x1C00  Loc         main [0]
+letra1H                    0x1C02  Loc         main [0]
+letra1L                    0x1C05  Loc         main [0]
+letra2H                    0x1C08  Loc         main [0]
+letra2L                    0x1C0B  Loc         main [0]
+letra3H                    0x1C0E  Loc         main [0]
+letra3L                    0x1C11  Loc         main [0]
+letra4H                    0x1C14  Loc         main [0]
+letra4L                    0x1C17  Loc         main [0]
+letra5H                    0x1C1A  Loc         main [0]
+letra5L                    0x1C1D  Loc         main [0]
+letra6H                    0x1C20  Loc         main [0]
+letra6L                    0x1C23  Loc         main [0]
 init                       0x4400  Loc         main [0]
 main                       0x4404  Pub         main [0]
-setUpP1                    0x4416  Loc         main [0]
-UnlockGPIO                 0x4446  Loc         main [0]
-MainLoop                   0x4468  Loc         main [0]
-checkPressed               0x44C2  Loc         main [0]
-test                       0x44CE  Loc         main [0]
-nameCounter                0x44D4  Loc         main [0]
-bryanName                  0x44D8  Loc         main [0]
+setupLCD                   0x442A  Loc         main [0]
+setUpP1                    0x443C  Loc         main [0]
+UnlockGPIO                 0x446E  Loc         main [0]
+titleDisplay               0x4490  Loc         main [0]
+checkPressed               0x44EC  Loc         main [0]
+resetName                  0x44FA  Loc         main [0]
+delay                      0x44FE  Loc         main [0]
+decrement                  0x4502  Loc         main [0]
+memberNames                0x4508  Loc         main [0]
+negate                     0x4588  Loc         main [0]
+shift                      0x4594  Loc         main [0]
 
-[0] = C:\Users\vegag\OneDrive\Documentos\MSP430\tarea2\Debug\Obj\asm.r43
+[0] = C:\Users\devan\OneDrive\Desktop\school\Arqui2\ARQUI-Project2-names\tarea2\Debug\Obj\asm.r43
 [1] = Command line (linker generated)
 
 
@@ -123,34 +138,49 @@ Linker generated:
         _STACK_SIZE        0x00A0  Pub
         __iar_HWMUL        0x04C0  Pub
 ******************************************************
-File: C:\Users\vegag\OneDrive\Documentos\MSP430\tarea2\Debug\Obj\asm.r43
+File: C:\Users\devan\OneDrive\Desktop\school\Arqui2\ARQUI-Project2-names\tarea2\Debug\Obj\asm.r43
   Module: main
        Segment part 0, CSTACK [root]
        Address:  0x2360 Size: 0x0 Align: 2(1)
     --------------------------------------------------
        Segment part 1, <CODE> 1 [root]
                       (was CODE)
-       Address:  0x4400 Size: 0x146 Align: 2(1)
+       Address:  0x4400 Size: 0x19E Align: 2(1)
        Ref by:   Absolute parts
       main                 0x4404  Pub
       init                 0x4400  Loc
-      setUpP1              0x4416  Loc
-      UnlockGPIO           0x4446  Loc
-      MainLoop             0x4468  Loc
-      checkPressed         0x44C2  Loc
-      nameCounter          0x44D4  Loc
-      test                 0x44CE  Loc
-      bryanName            0x44D8  Loc
+      setupLCD             0x442A  Loc
+      setUpP1              0x443C  Loc
+      UnlockGPIO           0x446E  Loc
+      negate               0x4588  Loc
+      shift                0x4594  Loc
+      titleDisplay         0x4490  Loc
+      checkPressed         0x44EC  Loc
+      memberNames          0x4508  Loc
+      resetName            0x44FA  Loc
+      delay                0x44FE  Loc
+      decrement            0x4502  Loc
 
       Absolute module symbols:
         __MSP430FR5922__  0x0000  Loc
         setUpPorts        0x1C00  Loc
-        bryanH            0x1C00  Loc
-        bryanL            0x1C05  Loc
+        instr             0x1C00  Loc
+        letra1H           0x1C02  Loc
+        letra1L           0x1C05  Loc
+        letra2H           0x1C08  Loc
+        letra2L           0x1C0B  Loc
+        letra3H           0x1C0E  Loc
+        letra3L           0x1C11  Loc
+        letra4H           0x1C14  Loc
+        letra4L           0x1C17  Loc
+        letra5H           0x1C1A  Loc
+        letra5L           0x1C1D  Loc
+        letra6H           0x1C20  Loc
+        letra6L           0x1C23  Loc
       Absolute code:
       Address         Size
       -------         ----
-      0x1C00                 0xA
+      0x1C00                0x26
       0xFFFE                 0x2
 
 
@@ -163,11 +193,11 @@ File: C:\Users\vegag\OneDrive\Documentos\MSP430\tarea2\Debug\Obj\asm.r43
 SEGMENT   SPACE    START/END ADDRESS      SIZE  TYPE  ALIGN
 -------   -----  ---------------------    ----  ----  -----
 CSTACK              0x2360 - 0x23FF       0xA0   rel   2(1)
-<CODE> 1            0x4400 - 0x4545      0x146   rel   2(1)
-                                0x1C00  0x1C09   0xA   aseg
+<CODE> 1            0x4400 - 0x459D      0x19E   rel   2(1)
+                                0x1C00  0x1C25  0x26   aseg
                                 0xFFFE  0xFFFF   0x2   aseg
 
- 326 bytes of CODE memory (+ 12 absolute )
+ 414 bytes of CODE memory (+ 40 absolute )
  160 bytes of DATA memory
 
 Errors: none

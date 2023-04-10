@@ -4,7 +4,10 @@
 
         PUBLIC  main                    ; make the main label vissible
 
-        ORG     0x1C00
+        ORG     0x1C00                  ; Set the origin 
+
+  
+
 setUpPorts:
 pos1	equ	9      ; Aplhanumeric A1 begins at S18
 pos2	equ	5      ; Aplhanumeric A2 begins at S10
@@ -13,11 +16,28 @@ pos4 	equ	18     ; Aplhanumeric A4 begins at S36
 pos5	equ	14     ; Aplhanumeric A5 begins at S28
 pos6 	equ	7      ; Aplhanumeric A6 begins at S14
 
-;Define high and low byte values to generate chars J, N, F
-;JNF           B    R    Y   A    N
-bryanH	db 0xF1,0xC1,0x00,0xEF,0x6C
-bryanL	db 0x50,0x52,0xB0,0x00,0x82          ;  N 0x6C,0x82
+;define instructions
+instr   db 011000010b, 11000110b ;C2, C6, respectively (NEG, SHR)
 
+;Define high and low byte values to generate chars J, N, F
+;JNF          A   B    D
+letra1H db 0xEF,0xF1,0xF0
+letra1L	db 0x00,0x50,0x50        ;  N 0x6C,0x82
+            ; N   R    E
+letra2H db 0x6C,0xC1,0x9F
+letra2L	db 0x82,0x52,0x00
+            ; G   Y    V 
+letra3H db 0xBD,0x00,0x60
+letra3L	db 0x00,0xB0,0x82
+            ; E   A    A
+letra4H db 0x9F,0xEF,0xEF
+letra4L	db 0x00,0x00,0x00
+            ; L   N    N 
+letra5H db 0x1C,0x6C,0x6C
+letra5L	db 0x00,0x82,0x82
+           ;" "  " "  " "
+letra6H db 0x00,0x00,0x00
+letra6L	db 0x00,0x00,0x00
 
                                         ; outside this module
         ORG     0FFFEh
@@ -25,14 +45,29 @@ bryanL	db 0x50,0x52,0xB0,0x00,0x82          ;  N 0x6C,0x82
 
         RSEG    CSTACK                  ; pre-declaration of segment
         RSEG    CODE                    ; place program in 'CODE' segment
-        
-
+    
 init:   MOV     #SFE(CSTACK), SP        ; set up stack
 main:   NOP
-        ;Initialize LCD segments 0 - 21; 26 - 43
+        MOV.W   #WDTPW+WDTHOLD,&WDTCTL  ; Stop watchdog timer
+
+        call    #setupLCD
+        call    #setUpP1
+        call    #UnlockGPIO
+        
+        call    #negate
+        call    #shift
+        call    #titleDisplay
+        call    #checkPressed
+        
+        jmp $
+
+
+setupLCD:
+;Initialize LCD segments 0 - 21; 26 - 43
 	MOV.W   #0xFFFF,&LCDCPCTL0
 	MOV.W   #0xfc3f,&LCDCPCTL1
     	MOV.W   #0x0fff,&LCDCPCTL2
+        ret
 setUpP1:
         bic.b   #0xFF,&P1SEL0           ; Set PxSel0 and PxSel1 to digital I/O
         bic.b   #0xFF,&P1SEL1           ; Digital I/O is the default
@@ -50,6 +85,7 @@ setUpP1:
                                         ; as pull-down
         bic.b   #0x01,&P1OUT            ; Clear P1.0 and P9.7 output latch to
         bic.b   #0x80,&P9OUT
+        ret
 
 UnlockGPIO:
         bic.w   #LOCKLPM5,&PM5CTL0      ; Disable the GPIO power-on default
@@ -72,11 +108,10 @@ UnlockGPIO:
 
 	;Turn LCD on
 	BIS.W   #1,&LCDCCTL0
-        
-        mov.b    #0,R6
-        mov.b    #0,R5
-        
-MainLoop:
+        MOV.B   #0,R6
+        ret
+
+titleDisplay:
         MOV.B   #pos1,R14
         
   	MOV.B   #0x9C,0x0a20(R14)
@@ -106,55 +141,88 @@ MainLoop:
         
         MOV.B   #0x6C,0x0a20(R14)
 	MOV.B   #0xA0,0x0a20+1(R14)
+        ret
+        
 checkPressed:
         mov.b   &P1IN,R5
         and.b   #00000110B,R5
         cmp.b   #00000010B,R5
-        jeq     nameCounter
-test:
-        cmp.b   #00000001B,R6
-        jeq     bryanName
-        
+        jeq     memberNames
         
         jmp     checkPressed
+resetName:
+        MOV.B   #0,R6
+        jmp     checkPressed
+
+delay:  ;Delay for inputs
+        mov.w     #0xFFFF,R4 
+        jmp     decrement
+decrement:
+        dec     R4
+        jnz     decrement
+        ret
         
-nameCounter:
-        inc     R6
-        jmp     test
         
-bryanName:
-	;Write Bryan on display's A1-A6 Alphanumeric chars
+memberNames:
+        MOV.W   #2 , &LCDCMEMCTL ;CLEAR LCD
+	;Write Name on display's A1-A6 Alphanumeric chars
+        
+        bis.b   #10000000B,&P9OUT
 	MOV.B   #pos1,R14
-	MOV.B	#0,R5
-  	MOV.B   bryanH(R5),0x0a20(R14)
-	MOV.B   bryanL(R5),0x0a20+1(R14)
+	;MOV.B	#0,R5
+  	MOV.B   letra1H(R6),0x0a20(R14)
+	MOV.B   letra1L(R6),0x0a20+1(R14)
 
 	MOV.B   #pos2,R14
-	MOV.B	#1,R5
-  	MOV.B   bryanH(R5),0x0a20(R14)
-	MOV.B   bryanL(R5),0x0a20+1(R14)
+	;MOV.B	#0,R5
+  	MOV.B   letra2H(R6),0x0a20(R14)
+	MOV.B   letra2L(R6),0x0a20+1(R14)
 
 	MOV.B   #pos3,R14
-	MOV.B	#2,R5
-  	MOV.B   bryanH(R5),0x0a20(R14)
-	MOV.B   bryanL(R5),0x0a20+1(R14)
+	;MOV.B	#0,R5
+  	MOV.B   letra3H(R6),0x0a20(R14)
+	MOV.B   letra3L(R6),0x0a20+1(R14)
         
         MOV.B   #pos4,R14
-        MOV.B   #3,R5
-        MOV.B   bryanH(R5),0x0a20(R14)
-	MOV.B   bryanL(R5),0x0a20+1(R14)
+	;MOV.B	#0,R5
+  	MOV.B   letra4H(R6),0x0a20(R14)
+	MOV.B   letra4L(R6),0x0a20+1(R14)
         
         MOV.B   #pos5,R14
-        MOV.B   #4,R5
-        MOV.B   bryanH(R5),0x0a20(R14)
-	MOV.B   bryanL(R5),0x0a20+1(R14)
+	;MOV.B	#0,R5
+  	MOV.B   letra5H(R6),0x0a20(R14)
+	MOV.B   letra5L(R6),0x0a20+1(R14)
         
         MOV.B   #pos6,R14
+	;MOV.B	#0,R5
+  	MOV.B   letra6H(R6),0x0a20(R14)
+	MOV.B   letra6L(R6),0x0a20+1(R14)
         
-        MOV.B   #0x00,0x0a20(R14)
-	MOV.B   #0x00,0x0a20+1(R14)
+        bic.b   #10000000B,&P9OUT
+        inc     R6
+        cmp.b   #0x0004,R6
+        jeq     resetName
+        
+        call    #delay
         jmp     checkPressed
-	JMP	$
-	nop
-                ; (endless loop)
-        END
+        JMP	$
+        nop
+        ; (endless loop)
+
+; Instruction Sets
+negate:
+        MOV.B   #0,R7           ;temporarily set R7 to 0 in order to index instr
+        MOV.B   instr(R7), R7   ;Set r7 to the value found in the instruction
+    
+        XOR.B   #0xFF, R7       ;Invert all bits 
+        INC.B   R7              ;Add 1 to R7 to get the two's complement
+        ret     
+shift:
+        MOV.B   #1,R7           ;temporarily set R7 to 1 in order to index instr
+        MOV.B   instr(R7), R7   ;Set r7 to the value found in the instruction
+        
+        RRC.B   R7          ;Shift one space to the right, store back in R7
+        ret   
+  
+END
+        
