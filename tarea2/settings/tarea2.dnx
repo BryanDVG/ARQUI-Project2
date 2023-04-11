@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <settings>
     <DebugChecksum>
-        <Checksum>3894167907</Checksum>
+        <Checksum>2288341769</Checksum>
     </DebugChecksum>
     <Disassembly>
         <InstrCount>0</InstrCount>
@@ -79,6 +79,15 @@
     <EEM_Cycle_Counter_1>
         <Counter1>0000000000000000000000000000000000000000000000000000000000000000</Counter1>
     </EEM_Cycle_Counter_1>
+    <SfrWindow>
+        <Show>1 1</Show>
+        <Sort>4 0</Sort>
+    </SfrWindow>
+    <LogFile>
+        <LoggingEnabled>_ 0</LoggingEnabled>
+        <LogFile>_ "$PROJ_DIR$\LogFile1.log"</LogFile>
+        <Category2>_ 2</Category2>
+    </LogFile>
     <PowerLog>
         <GraphEnabled>0</GraphEnabled>
         <LogEnabled>0</LogEnabled>
@@ -92,24 +101,6 @@
         <LiveEnabled>0</LiveEnabled>
         <LiveFile />
     </PowerLog>
-    <TermIOLog>
-        <LoggingEnabled>_ 0</LoggingEnabled>
-        <LogFile>_ ""</LogFile>
-    </TermIOLog>
-    <PowerProbe>
-        <Frequency>10000</Frequency>
-        <Probe0>Current</Probe0>
-        <ProbeSetup0>0 1 1 2 0 0</ProbeSetup0>
-        <Probe1>Voltage</Probe1>
-        <ProbeSetup1>1 1 1 4 0 0</ProbeSetup1>
-        <Probe2>Energy</Probe2>
-        <ProbeSetup2>4 1 1 10 0 0</ProbeSetup2>
-    </PowerProbe>
-    <LogFile>
-        <LoggingEnabled>_ 0</LoggingEnabled>
-        <LogFile>_ "$PROJ_DIR$\LogFile1.log"</LogFile>
-        <Category2>_ 2</Category2>
-    </LogFile>
     <Breakpoints2>
         <Count>0</Count>
     </Breakpoints2>
@@ -121,7 +112,7 @@
         <Advanced_Extended_Clock_Control>0</Advanced_Extended_Clock_Control>
         <Emulation_mode>0</Emulation_mode>
         <Free_running>0</Free_running>
-        <Shutting_Down>3</Shutting_Down>
+        <Shutting_Down>1</Shutting_Down>
     </FET>
     <Memory_Dump>
         <Start_address />
@@ -135,8 +126,21 @@
         <all_registers>0</all_registers>
         <File_name />
     </Memory_Dump>
+    <TermIOLog>
+        <LoggingEnabled>_ 0</LoggingEnabled>
+        <LogFile>_ ""</LogFile>
+    </TermIOLog>
     <Aliases>
         <Count>0</Count>
         <SuppressDialog>0</SuppressDialog>
     </Aliases>
+    <PowerProbe>
+        <Frequency>10000</Frequency>
+        <Probe0>Current</Probe0>
+        <ProbeSetup0>0 1 1 2 0 0</ProbeSetup0>
+        <Probe1>Voltage</Probe1>
+        <ProbeSetup1>1 1 1 4 0 0</ProbeSetup1>
+        <Probe2>Energy</Probe2>
+        <ProbeSetup2>4 1 1 10 0 0</ProbeSetup2>
+    </PowerProbe>
 </settings>

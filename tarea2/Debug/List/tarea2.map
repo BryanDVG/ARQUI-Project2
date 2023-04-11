@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR UBROF Linker V10.12.4.1422                          06/Apr/2023  23:11:53
+# IAR UBROF Linker V10.12.4.1422                          10/Apr/2023  19:55:49
 # Copyright 1987-2022 IAR Systems AB.
 #
 #    Target Cpu    =  MSP430
@@ -90,25 +90,27 @@ _STACK_SIZE                0x00A0  Pub         ?ABS_ENTRY_MOD [1]
 __iar_HWMUL                0x04C0  Pub         ?ABS_ENTRY_MOD [1]
 setUpPorts                 0x1C00  Loc         main [0]
 letra1H                    0x1C00  Loc         main [0]
-letra1L                    0x1C03  Loc         main [0]
-letra2H                    0x1C06  Loc         main [0]
-letra2L                    0x1C09  Loc         main [0]
-letra3H                    0x1C0C  Loc         main [0]
-letra3L                    0x1C0F  Loc         main [0]
-letra4H                    0x1C12  Loc         main [0]
-letra4L                    0x1C15  Loc         main [0]
-letra5H                    0x1C18  Loc         main [0]
-letra5L                    0x1C1B  Loc         main [0]
-letra6H                    0x1C1E  Loc         main [0]
-letra6L                    0x1C21  Loc         main [0]
+letra1L                    0x1C05  Loc         main [0]
+letra2H                    0x1C0A  Loc         main [0]
+letra2L                    0x1C0F  Loc         main [0]
+letra3H                    0x1C14  Loc         main [0]
+letra3L                    0x1C19  Loc         main [0]
+letra4H                    0x1C1E  Loc         main [0]
+letra4L                    0x1C23  Loc         main [0]
+letra5H                    0x1C28  Loc         main [0]
+letra5L                    0x1C2D  Loc         main [0]
+letra6H                    0x1C32  Loc         main [0]
+letra6L                    0x1C37  Loc         main [0]
 init                       0x4400  Loc         main [0]
 main                       0x4404  Pub         main [0]
-setUpP1                    0x4416  Loc         main [0]
-UnlockGPIO                 0x4446  Loc         main [0]
-MainLoop                   0x4466  Loc         main [0]
-checkPressed               0x44C0  Loc         main [0]
-resetName                  0x44CE  Loc         main [0]
-memberNames                0x44D2  Loc         main [0]
+setUpP1                    0x441C  Loc         main [0]
+UnlockGPIO                 0x444C  Loc         main [0]
+displayLCD                 0x446C  Loc         main [0]
+checkPressed               0x44D8  Loc         main [0]
+s2ToGo                     0x44EA  Loc         main [0]
+checkStart                 0x44EE  Loc         main [0]
+resetName                  0x44FC  Loc         main [0]
+mainLoop                   0x4500  Loc         main [0]
 
 [0] = C:\Users\vegag\OneDrive\Documentos\MSP430\tarea2\Debug\Obj\asm.r43
 [1] = Command line (linker generated)
@@ -139,36 +141,38 @@ File: C:\Users\vegag\OneDrive\Documentos\MSP430\tarea2\Debug\Obj\asm.r43
     --------------------------------------------------
        Segment part 1, <CODE> 1 [root]
                       (was CODE)
-       Address:  0x4400 Size: 0x14C Align: 2(1)
+       Address:  0x4400 Size: 0x10A Align: 2(1)
        Ref by:   Absolute parts
       main                 0x4404  Pub
       init                 0x4400  Loc
-      setUpP1              0x4416  Loc
-      UnlockGPIO           0x4446  Loc
-      MainLoop             0x4466  Loc
-      checkPressed         0x44C0  Loc
-      memberNames          0x44D2  Loc
-      resetName            0x44CE  Loc
+      setUpP1              0x441C  Loc
+      UnlockGPIO           0x444C  Loc
+      displayLCD           0x446C  Loc
+      resetName            0x44FC  Loc
+      checkStart           0x44EE  Loc
+      checkPressed         0x44D8  Loc
+      s2ToGo               0x44EA  Loc
+      mainLoop             0x4500  Loc
 
       Absolute module symbols:
         __MSP430FR5922__  0x0000  Loc
         setUpPorts        0x1C00  Loc
         letra1H           0x1C00  Loc
-        letra1L           0x1C03  Loc
-        letra2H           0x1C06  Loc
-        letra2L           0x1C09  Loc
-        letra3H           0x1C0C  Loc
-        letra3L           0x1C0F  Loc
-        letra4H           0x1C12  Loc
-        letra4L           0x1C15  Loc
-        letra5H           0x1C18  Loc
-        letra5L           0x1C1B  Loc
-        letra6H           0x1C1E  Loc
-        letra6L           0x1C21  Loc
+        letra1L           0x1C05  Loc
+        letra2H           0x1C0A  Loc
+        letra2L           0x1C0F  Loc
+        letra3H           0x1C14  Loc
+        letra3L           0x1C19  Loc
+        letra4H           0x1C1E  Loc
+        letra4L           0x1C23  Loc
+        letra5H           0x1C28  Loc
+        letra5L           0x1C2D  Loc
+        letra6H           0x1C32  Loc
+        letra6L           0x1C37  Loc
       Absolute code:
       Address         Size
       -------         ----
-      0x1C00                0x24
+      0x1C00                0x3C
       0xFFFE                 0x2
 
 
@@ -181,11 +185,11 @@ File: C:\Users\vegag\OneDrive\Documentos\MSP430\tarea2\Debug\Obj\asm.r43
 SEGMENT   SPACE    START/END ADDRESS      SIZE  TYPE  ALIGN
 -------   -----  ---------------------    ----  ----  -----
 CSTACK              0x2360 - 0x23FF       0xA0   rel   2(1)
-<CODE> 1            0x4400 - 0x454B      0x14C   rel   2(1)
-                                0x1C00  0x1C23  0x24   aseg
+<CODE> 1            0x4400 - 0x4509      0x10A   rel   2(1)
+                                0x1C00  0x1C3B  0x3C   aseg
                                 0xFFFE  0xFFFF   0x2   aseg
 
- 332 bytes of CODE memory (+ 38 absolute )
+ 266 bytes of CODE memory (+ 62 absolute )
  160 bytes of DATA memory
 
 Errors: none

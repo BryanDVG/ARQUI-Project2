@@ -5,12 +5,12 @@
     <configuration>
         <name>Debug</name>
         <outputs>
-            <file>$TOOLKIT_DIR$\config\linker\lnk430fr6989.xcl</file>
-            <file>$PROJ_DIR$\asm.s43</file>
-            <file>$PROJ_DIR$\Debug\List\tarea2.map</file>
             <file>$TOOLKIT_DIR$\inc\msp430.h</file>
             <file>$PROJ_DIR$\Debug\Obj\asm.r43</file>
             <file>$TOOLKIT_DIR$\inc\msp430fr6989.h</file>
+            <file>$PROJ_DIR$\Debug\List\tarea2.map</file>
+            <file>$PROJ_DIR$\asm.s43</file>
+            <file>$TOOLKIT_DIR$\config\linker\lnk430fr6989.xcl</file>
             <file>$PROJ_DIR$\Debug\Exe\tarea2.d43</file>
         </outputs>
         <file>
@@ -18,13 +18,13 @@
             <outputs>
                 <tool>
                     <name>A430</name>
-                    <file> 4</file>
+                    <file> 1</file>
                 </tool>
             </outputs>
             <inputs>
                 <tool>
                     <name>A430</name>
-                    <file> 3 5</file>
+                    <file> 0 2</file>
                 </tool>
             </inputs>
         </file>
@@ -33,13 +33,13 @@
             <outputs>
                 <tool>
                     <name>XLINK</name>
-                    <file> 2</file>
+                    <file> 3</file>
                 </tool>
             </outputs>
             <inputs>
                 <tool>
                     <name>XLINK</name>
-                    <file> 0 4</file>
+                    <file> 5 1</file>
                 </tool>
             </inputs>
         </file>
@@ -48,7 +48,7 @@
             <outputs>
                 <tool>
                     <name>XLINK</name>
-                    <file> 6 2</file>
+                    <file> 6 3</file>
                 </tool>
             </outputs>
         </file>

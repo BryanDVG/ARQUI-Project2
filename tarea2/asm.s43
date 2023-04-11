@@ -14,24 +14,24 @@ pos5	equ	14     ; Aplhanumeric A5 begins at S28
 pos6 	equ	7      ; Aplhanumeric A6 begins at S14
 
 ;Define high and low byte values to generate chars J, N, F
-;JNF          A   B    D
-letra1H db 0xEF,0xF1,0xF0
-letra1L	db 0x00,0x50,0x50        ;  N 0x6C,0x82
-            ; N   R    E
-letra2H db 0x6C,0xC1,0x9F
-letra2L	db 0x82,0x52,0x00
-            ; G   Y    V 
-letra3H db 0xBD,0x00,0x60
-letra3L	db 0x00,0xB0,0x82
-            ; E   A    A
-letra4H db 0x9F,0xEF,0xEF
-letra4L	db 0x00,0x00,0x00
-            ; L   N    N 
-letra5H db 0x1C,0x6C,0x6C
-letra5L	db 0x00,0x82,0x82
-           ;" "  " "  " "
-letra6H db 0x00,0x00,0x00
-letra6L	db 0x00,0x00,0x00
+;JNF         S     C    A   B    D
+letra1H db 0xB7,0x9C,0xEF,0xF1,0xF0
+letra1L	db 0x00 ,0x00,0x00,0x50,0x50       ;  N 0x6C,0x82
+           ; 2     P    N   R    E
+letra2H db 0xDB,0xC1,0x6C,0xC1,0x9F
+letra2L	db 0x00,0x50,0x82,0x52,0x00
+           ;  T    U    G   Y    V 
+letra3H db 0x80,0x7C,0xBD,0x00,0x60
+letra3L	db 0x50,0x00,0x00,0xB0,0x82
+           ;  O    R    E   A    A
+letra4H db 0xFC,0xC1,0x9F,0xEF,0xEF
+letra4L	db 0x00,0x52,0x00,0x00,0x00
+           ;  G    U    L   N    N 
+letra5H db 0xBD,0x7C,0x1C,0x6C,0x6C
+letra5L	db 0x00,0x00,0x00,0x82,0x82
+          ;   O    M   " "  " "  " "
+letra6H db 0xFC,0x6C,0x00,0x00,0x00
+letra6L	db 0x00,0xA0,0x00,0x00,0x00
 
 
                                         ; outside this module
@@ -48,6 +48,7 @@ main:   NOP
 	MOV.W   #0xFFFF,&LCDCPCTL0
 	MOV.W   #0xfc3f,&LCDCPCTL1
     	MOV.W   #0x0fff,&LCDCPCTL2
+        MOV.W   #WDTPW+WDTHOLD,&WDTCTL  ; Stop watchdog timer
 setUpP1:
         bic.b   #0xFF,&P1SEL0           ; Set PxSel0 and PxSel1 to digital I/O
         bic.b   #0xFF,&P1SEL1           ; Digital I/O is the default
@@ -87,53 +88,11 @@ UnlockGPIO:
 
 	;Turn LCD on
 	BIS.W   #1,&LCDCCTL0
-        MOV.B   #0,R6
         
-MainLoop:
-        MOV.B   #pos1,R14
+        MOV.B   #1,R6
         
-  	MOV.B   #0x9C,0x0a20(R14)
-	MOV.B   #0x00,0x0a20+1(R14)
-
-	MOV.B   #pos2,R14
+displayLCD:
         
-  	MOV.B   #0xC1,0x0a20(R14)
-	MOV.B   #0x50,0x0a20+1(R14)
-
-	MOV.B   #pos3,R14
-        
-  	MOV.B   #0x7C,0x0a20(R14)
-	MOV.B   #0x00,0x0a20+1(R14)
-        
-        MOV.B   #pos4,R14
-        
-        MOV.B   #0xC1,0x0a20(R14)
-	MOV.B   #0x52,0x0a20+1(R14)
-        
-        MOV.B   #pos5,R14
-        
-        MOV.B   #0x7C,0x0a20(R14)
-	MOV.B   #0x00,0x0a20+1(R14)
-        
-        MOV.B   #pos6,R14
-        
-        MOV.B   #0x6C,0x0a20(R14)
-	MOV.B   #0xA0,0x0a20+1(R14)
-checkPressed:
-        mov.b   &P1IN,R5
-        and.b   #00000110B,R5
-        cmp.b   #00000010B,R5
-        jeq     memberNames
-        
-        jmp     checkPressed
-resetName:
-        MOV.B   #0,R6
-        jmp     checkPressed
-        
-memberNames:
-	;Write Bryan on display's A1-A6 Alphanumeric chars
-        
-        bis.b   #10000000B,&P9OUT
 	MOV.B   #pos1,R14
 	;MOV.B	#0,R5
   	MOV.B   letra1H(R6),0x0a20(R14)
@@ -164,12 +123,36 @@ memberNames:
   	MOV.B   letra6H(R6),0x0a20(R14)
 	MOV.B   letra6L(R6),0x0a20+1(R14)
         
-        bic.b   #10000000B,&P9OUT
         inc     R6
-        cmp.b   #0x0003,R6
+        cmp.b   #0x0005,R6
         jeq     resetName
+        cmp.b   #0x0001,R6
+        jeq     checkStart
+checkPressed:
+        mov.b   &P1IN,R5
+        and.b   #00000110B,R5
+        cmp.b   #00000010B,R5
+        jeq     displayLCD
+        cmp.b   #00000100B,R5
+        jeq     s2ToGo
         
         jmp     checkPressed
+s2ToGo:
+        mov.b   #0x0000,R6
+        jmp     displayLCD
+checkStart:
+        mov.b   &P1IN,R5
+        and.b   #00000110B,R5
+        cmp.b   #00000010B,R5
+        jeq     mainLoop
+        
+        jmp     checkStart
+resetName:
+        MOV.B   #2,R6
+        jmp     checkPressed
+         
+mainLoop:
+        bis.b   #10000000B,&P9OUT
 	JMP	$
 	nop
                 ; (endless loop)
