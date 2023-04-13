@@ -771,7 +771,7 @@
                 </option>
                 <option>
                     <name>XclFile</name>
-                    <state>$TOOLKIT_DIR$\CONFIG\lnk430F149.xcl</state>
+                    <state>$TOOLKIT_DIR$\config\linker\lnk430f149.xcl</state>
                 </option>
                 <option>
                     <name>XclFileSlave</name>
@@ -899,7 +899,7 @@
                 </option>
                 <option>
                     <name>ExtraOutputFile</name>
-                    <state>templproj.a43</state>
+                    <state>tarea2.a43</state>
                 </option>
                 <option>
                     <name>ExtraOutputFormat</name>
@@ -1096,11 +1096,7 @@
                 <debug>1</debug>
                 <option>
                     <name>CUTest</name>
-                    <state>-I$TOOLKIT_DIR$\inc</state>
-                    <state>-@$TOOLKIT_DIR$\bin\iar.cmd</state>
-                    <state>-@$PROJ_DIR$\source.txt</state>
-                    <state>-@$PROJ_DIR$\include.txt</state>
-                    <state>--preinclude=$PROJ_DIR$\IAR_ULPAdvisor_Defs.h</state>
+                    <state>###Uninitialized###</state>
                 </option>
                 <option>
                     <name>ULPRules</name>
@@ -1113,7 +1109,7 @@
                 </option>
                 <option>
                     <name>OutputFile</name>
-                    <state>$PROJ_FNAME$.ulp</state>
+                    <state></state>
                 </option>
                 <option>
                     <name>ULPStatus</name>
