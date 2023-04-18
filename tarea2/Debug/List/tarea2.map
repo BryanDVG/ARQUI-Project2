@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR UBROF Linker V10.12.4.1422                          18/Apr/2023  09:40:01
+# IAR UBROF Linker V10.12.4.1422                          18/Apr/2023  09:58:13
 # Copyright 1987-2022 IAR Systems AB.
 #
 #    Target Cpu    =  MSP430
@@ -89,19 +89,19 @@ _DATA16_HEAP_SIZE             0x00A0  Pub         ?ABS_ENTRY_MOD [0]
 _STACK_SIZE                   0x00A0  Pub         ?ABS_ENTRY_MOD [0]
 __iar_HWMUL                   0x04C0  Pub         ?ABS_ENTRY_MOD [0]
 setUpPorts                    0x1C10  Loc         main
-instr                         0x1C10  Loc         main
-letra1H                       0x1C12  Loc         main
-letra1L                       0x1C17  Loc         main
-letra2H                       0x1C1C  Loc         main
-letra2L                       0x1C21  Loc         main
-letra3H                       0x1C26  Loc         main
-letra3L                       0x1C2B  Loc         main
-letra4H                       0x1C30  Loc         main
-letra4L                       0x1C35  Loc         main
-letra5H                       0x1C3A  Loc         main
-letra5L                       0x1C3F  Loc         main
-letra6H                       0x1C44  Loc         main
-letra6L                       0x1C49  Loc         main
+runningInDebugger             0x1C10  Loc         main
+letra1H                       0x1C11  Loc         main
+letra1L                       0x1C16  Loc         main
+letra2H                       0x1C1B  Loc         main
+letra2L                       0x1C20  Loc         main
+letra3H                       0x1C25  Loc         main
+letra3L                       0x1C2A  Loc         main
+letra4H                       0x1C2F  Loc         main
+letra4L                       0x1C34  Loc         main
+letra5H                       0x1C39  Loc         main
+letra5L                       0x1C3E  Loc         main
+letra6H                       0x1C43  Loc         main
+letra6L                       0x1C48  Loc         main
 init                          0x4400  Loc         main
 main                          0x4404  Pub         main
 setupLCD                      0x4428  Loc         main
@@ -150,7 +150,7 @@ shift                         0x486E  Loc         main
 in                            0x488E  Loc         main
 out                           0x4890  Loc         main
 JR30                          0x4892  Loc         main
-exitJR30                      0x489C  Loc         main
+exitJR30                      0x489E  Loc         main
 
 [0] = Command line (linker generated)
 
@@ -180,7 +180,7 @@ File: C:\Users\devan\OneDrive\Desktop\school\Arqui2\ARQUI-Project2-main\tarea2\D
     --------------------------------------------------
        Segment part 1, <CODE> 1 [root]
                       (was CODE)
-       Address:  0x4400 Size: 0x49E Align: 2(1)
+       Address:  0x4400 Size: 0x4A0 Align: 2(1)
        Ref by:   Absolute parts
       main                  0x4404  Pub
       init                  0x4400  Loc
@@ -230,28 +230,28 @@ File: C:\Users\devan\OneDrive\Desktop\school\Arqui2\ARQUI-Project2-main\tarea2\D
       setR11                0x47DC  Loc
       setR12                0x47E0  Loc
       setR13                0x47E4  Loc
-      exitJR30              0x489C  Loc
+      exitJR30              0x489E  Loc
 
       Absolute module symbols:
-        __MSP430FR5922__  0x0000  Loc
-        setUpPorts        0x1C10  Loc
-        instr             0x1C10  Loc
-        letra1H           0x1C12  Loc
-        letra1L           0x1C17  Loc
-        letra2H           0x1C1C  Loc
-        letra2L           0x1C21  Loc
-        letra3H           0x1C26  Loc
-        letra3L           0x1C2B  Loc
-        letra4H           0x1C30  Loc
-        letra4L           0x1C35  Loc
-        letra5H           0x1C3A  Loc
-        letra5L           0x1C3F  Loc
-        letra6H           0x1C44  Loc
-        letra6L           0x1C49  Loc
+        __MSP430FR5922__   0x0000  Loc
+        setUpPorts         0x1C10  Loc
+        runningInDebugger  0x1C10  Loc
+        letra1H            0x1C11  Loc
+        letra1L            0x1C16  Loc
+        letra2H            0x1C1B  Loc
+        letra2L            0x1C20  Loc
+        letra3H            0x1C25  Loc
+        letra3L            0x1C2A  Loc
+        letra4H            0x1C2F  Loc
+        letra4L            0x1C34  Loc
+        letra5H            0x1C39  Loc
+        letra5L            0x1C3E  Loc
+        letra6H            0x1C43  Loc
+        letra6L            0x1C48  Loc
       Absolute code:
       Address         Size
       -------         ----
-      0x1C10                0x3E
+      0x1C10                0x3D
       0xFFFE                 0x2
 
 
@@ -264,11 +264,11 @@ File: C:\Users\devan\OneDrive\Desktop\school\Arqui2\ARQUI-Project2-main\tarea2\D
 SEGMENT   SPACE    START/END ADDRESS      SIZE  TYPE  ALIGN
 -------   -----  ---------------------    ----  ----  -----
 CSTACK              0x2360 - 0x23FF       0xA0   rel   2(1)
-<CODE> 1            0x4400 - 0x489D      0x49E   rel   2(1)
-                                0x1C10  0x1C4D  0x3E   aseg
+<CODE> 1            0x4400 - 0x489F      0x4A0   rel   2(1)
+                                0x1C10  0x1C4C  0x3D   aseg
                                 0xFFFE  0xFFFF   0x2   aseg
 
- 1'182 bytes of CODE memory (+ 64 absolute )
+ 1'184 bytes of CODE memory (+ 63 absolute )
    160 bytes of DATA memory
 
 Errors: none

@@ -18,8 +18,7 @@ pos6 	equ	7      ; Aplhanumeric A6 begins at S14
 
 origin  equ     0x1C00 ; Start of reserved RAM
 
-;define instructions
-instr   db 00000010b, 01000010b
+runningInDebugger db 0
         
 
 ;Define high and low byte values to generate chars J, N, F
@@ -686,7 +685,8 @@ JR30:
 
         CMP     #0, R13             ;Compare the value of R13 with zero
         JNZ     exitJR30           ;If the R3 is not zero, skip jmp instr.
-        MOV     R7, PC              ;Move to address 'aaaa' 
+        SUB.W   #1, R7              ;Offset the address by -1, because PC is updated right after this is executed
+        MOV     R7, R4              ;Move to address 'aaaa', PC in this context is R4 
 exitJR30:
         ret
         
