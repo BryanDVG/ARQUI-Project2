@@ -4,7 +4,10 @@
 
         PUBLIC  main                    ; make the main label vissible
 
-        ORG     0x1C00
+        ORG     0x1C10                  ; Set the origin 
+
+  
+
 setUpPorts:
 pos1	equ	9      ; Aplhanumeric A1 begins at S18
 pos2	equ	5      ; Aplhanumeric A2 begins at S10
@@ -13,11 +16,31 @@ pos4 	equ	18     ; Aplhanumeric A4 begins at S36
 pos5	equ	14     ; Aplhanumeric A5 begins at S28
 pos6 	equ	7      ; Aplhanumeric A6 begins at S14
 
-;Define high and low byte values to generate chars J, N, F
-;JNF           B    R    Y   A    N
-bryanH	db 0xF1,0xC1,0x00,0xEF,0x6C
-bryanL	db 0x50,0x52,0xB0,0x00,0x82          ;  N 0x6C,0x82
+origin  equ     0x1C00 ; Start of reserved RAM
 
+;define instructions
+instr   db 00000010b, 01000010b
+        
+
+;Define high and low byte values to generate chars J, N, F
+;JNF         S     C    A   B    D
+letra1H db 0xB7,0x9C,0xEF,0xF1,0xF0
+letra1L	db 0x00 ,0x00,0x00,0x50,0x50       ;  N 0x6C,0x82
+           ; 2     P    N   R    E
+letra2H db 0xDB,0xC1,0x6C,0xC1,0x9F
+letra2L	db 0x00,0x50,0x82,0x52,0x00
+           ;  T    U    G   Y    V 
+letra3H db 0x80,0x7C,0xBD,0x00,0x60
+letra3L	db 0x50,0x00,0x00,0xB0,0x82
+           ;  O    R    E   A    A
+letra4H db 0xFC,0xC1,0x9F,0xEF,0xEF
+letra4L	db 0x00,0x52,0x00,0x00,0x00
+           ;  G    U    L   N    N 
+letra5H db 0xBD,0x7C,0x1C,0x6C,0x6C
+letra5L	db 0x00,0x00,0x00,0x82,0x82
+          ;   O    M   " "  " "  " "
+letra6H db 0xFC,0x6C,0x00,0x00,0x00
+letra6L	db 0x00,0xA0,0x00,0x00,0x00
 
                                         ; outside this module
         ORG     0FFFEh
@@ -25,14 +48,28 @@ bryanL	db 0x50,0x52,0xB0,0x00,0x82          ;  N 0x6C,0x82
 
         RSEG    CSTACK                  ; pre-declaration of segment
         RSEG    CODE                    ; place program in 'CODE' segment
-        
-
+    
 init:   MOV     #SFE(CSTACK), SP        ; set up stack
 main:   NOP
-        ;Initialize LCD segments 0 - 21; 26 - 43
+        MOV.W   #WDTPW+WDTHOLD,&WDTCTL  ; Stop watchdog timer
+
+        call    #setupLCD
+        call    #setUpP1
+        call    #UnlockGPIO  
+        
+        call    #LoadTestCases
+        call    #titleDisplay
+        MOV.B   #2,R6           ;set R6 index for member names
+        call    #checkPressed
+        jmp $
+       
+
+setupLCD:
+;Initialize LCD segments 0 - 21; 26 - 43
 	MOV.W   #0xFFFF,&LCDCPCTL0
 	MOV.W   #0xfc3f,&LCDCPCTL1
     	MOV.W   #0x0fff,&LCDCPCTL2
+        ret
 setUpP1:
         bic.b   #0xFF,&P1SEL0           ; Set PxSel0 and PxSel1 to digital I/O
         bic.b   #0xFF,&P1SEL1           ; Digital I/O is the default
@@ -50,6 +87,7 @@ setUpP1:
                                         ; as pull-down
         bic.b   #0x01,&P1OUT            ; Clear P1.0 and P9.7 output latch to
         bic.b   #0x80,&P9OUT
+        ret
 
 UnlockGPIO:
         bic.w   #LOCKLPM5,&PM5CTL0      ; Disable the GPIO power-on default
@@ -72,11 +110,57 @@ UnlockGPIO:
 
 	;Turn LCD on
 	BIS.W   #1,&LCDCCTL0
-        
-        mov.b    #0,R6
-        mov.b    #0,R5
-        
-MainLoop:
+        MOV.B   #0,R6
+        ret
+;-------------------------------------------------------------------------------
+LoadTestCases:
+;set registers to 0
+mov.b #0,R10
+mov.b #0,R11
+mov.b #0,R12
+mov.b #0,R13
+
+;sets ram to 0 (default instr)
+MOV.b #00000000b, &0x1c00
+MOV.b #00000000b, &0x1c01
+MOV.b #00000000b, &0x1c02
+MOV.b #00000000b, &0x1c03
+MOV.b #00000000b, &0x1c04
+MOV.b #00000000b, &0x1c05
+MOV.b #00000000b, &0x1c06
+MOV.b #00000000b, &0x1c07
+MOV.b #00000000b, &0x1c08
+MOV.b #00000000b, &0x1c09
+MOV.b #00000000b, &0x1c0a
+MOV.b #00000000b, &0x1c0b
+MOV.b #00000000b, &0x1c0c
+MOV.b #00000000b, &0x1c0d
+MOV.b #00000000b, &0x1c0e
+MOV.b #00000000b, &0x1c0f
+
+;load test cases
+MOV.b #10h, &0x1c00             ;10     r1<-ram1[10h]
+MOV.b #5fh, &0x1c01             ;5f     ram16<-r1[10h]
+MOV.b #23h, &0x1c02             ;23     r2<-ram3[23h]
+MOV.b #98h, &0x1c03             ;98     r1<-r1[10h]+r2[23h]:r1[33h]
+MOV.b #11000001b, &0x1c04       ;c1     r1<-2s comp of r1[33h]:r1[??]
+MOV.b #11000110b, &0x1c05       ;c6     shr of r2[23h]:r2[??]
+MOV.b #11001100b, &0x1c06       ;cc     r0<-in
+MOV.b #11100100b, &0x1c07       ;e4     out0 <-r1
+MOV.b #11101001b, &0x1c08       ;e9     out1 <-r2
+MOV.b #11101010b, &0x1c09       ;ea     out2 <-r2
+MOV.b #11110000b, &0x1c0a       ;f0     jump to ram1 if r3=0
+MOV.b #00000000b, &0x1c0b       ;
+MOV.b #00000000b, &0x1c0c       ;
+MOV.b #00000000b, &0x1c0d       ;
+MOV.b #00000000b, &0x1c0e       ;
+MOV.b #00000000b, &0x1c0f       ;
+
+ret
+
+;-------------------------------------------------------------------------------
+
+titleDisplay:
         MOV.B   #pos1,R14
         
   	MOV.B   #0x9C,0x0a20(R14)
@@ -106,55 +190,312 @@ MainLoop:
         
         MOV.B   #0x6C,0x0a20(R14)
 	MOV.B   #0xA0,0x0a20+1(R14)
+        ret
+        
+displayLCD:
+        MOV.W   #2 , &LCDCMEMCTL ;CLEAR LCD
+	;Write Name on display's A1-A6 Alphanumeric chars
+        
+        bis.b   #10000000B,&P9OUT
+	MOV.B   #pos1,R14
+	;MOV.B	#0,R5
+  	MOV.B   letra1H(R6),0x0a20(R14)
+	MOV.B   letra1L(R6),0x0a20+1(R14)
+
+	MOV.B   #pos2,R14
+	;MOV.B	#0,R5
+  	MOV.B   letra2H(R6),0x0a20(R14)
+	MOV.B   letra2L(R6),0x0a20+1(R14)
+
+	MOV.B   #pos3,R14
+	;MOV.B	#0,R5
+  	MOV.B   letra3H(R6),0x0a20(R14)
+	MOV.B   letra3L(R6),0x0a20+1(R14)
+        
+        MOV.B   #pos4,R14
+	;MOV.B	#0,R5
+  	MOV.B   letra4H(R6),0x0a20(R14)
+	MOV.B   letra4L(R6),0x0a20+1(R14)
+        
+        MOV.B   #pos5,R14
+	;MOV.B	#0,R5
+  	MOV.B   letra5H(R6),0x0a20(R14)
+	MOV.B   letra5L(R6),0x0a20+1(R14)
+        
+        MOV.B   #pos6,R14
+	;MOV.B	#0,R5
+  	MOV.B   letra6H(R6),0x0a20(R14)
+	MOV.B   letra6L(R6),0x0a20+1(R14)
+        
+        bic.b   #10000000B,&P9OUT
+        inc     R6
+        cmp.b   #0x0006,R6      ;condition for loop
+        jeq     resetName
+        
+        call    #delay
+        
+        ;cmp.b   #0x0001,R6
+        ;jeq     checkStart
+        
+        jmp     checkPressed
+        
+s2ToGoDisplay:  
+        mov.b   #0x0000,R6      ; set display setting so s2togo
+          
+        bis.b   #10000000B,&P9OUT
+	MOV.B   #pos1,R14
+	;MOV.B	#0,R5
+  	MOV.B   letra1H(R6),0x0a20(R14)
+	MOV.B   letra1L(R6),0x0a20+1(R14)
+
+	MOV.B   #pos2,R14
+	;MOV.B	#0,R5
+  	MOV.B   letra2H(R6),0x0a20(R14)
+	MOV.B   letra2L(R6),0x0a20+1(R14)
+
+	MOV.B   #pos3,R14
+	;MOV.B	#0,R5
+  	MOV.B   letra3H(R6),0x0a20(R14)
+	MOV.B   letra3L(R6),0x0a20+1(R14)
+        
+        MOV.B   #pos4,R14
+	;MOV.B	#0,R5
+  	MOV.B   letra4H(R6),0x0a20(R14)
+	MOV.B   letra4L(R6),0x0a20+1(R14)
+        
+        MOV.B   #pos5,R14
+	;MOV.B	#0,R5
+  	MOV.B   letra5H(R6),0x0a20(R14)
+	MOV.B   letra5L(R6),0x0a20+1(R14)
+        
+        MOV.B   #pos6,R14
+	;MOV.B	#0,R5
+  	MOV.B   letra6H(R6),0x0a20(R14)
+	MOV.B   letra6L(R6),0x0a20+1(R14)
+        ret
+
+s2ToGo:
+        call    #s2ToGoDisplay
+        
+        mov.b   &P1IN,R5
+        and.b   #00000110B,R5
+        cmp.b   #00000010B,R5           ;check for s2 input
+
+        MOV.W   #origin, R4              ;R4, which will keep track of the instructions, is set
+        jne     s2ToGo                  ; Loop if not equal  
+        
+        call    #run_instr              ;As soon as its pressed, call run_instr
+        ret
+     
+;Polling loop
 checkPressed:
         mov.b   &P1IN,R5
         and.b   #00000110B,R5
+        ;member names jump
         cmp.b   #00000010B,R5
-        jeq     nameCounter
-test:
-        cmp.b   #00000001B,R6
-        jeq     bryanName
+        jeq     displayLCD  
         
+        ;S2ToGo jump
+        cmp.b   #00000100B,R5
+        jne     checkPressed
         
+        call    #s2ToGo  ;called when checkPressed is not called, which means this is jeq inherently
+      
+        jmp checkPressed
+        
+        ret
+ 
+ 
+resetName:
+        MOV.B   #2,R6
         jmp     checkPressed
-        
-nameCounter:
-        inc     R6
-        jmp     test
-        
-bryanName:
-	;Write Bryan on display's A1-A6 Alphanumeric chars
-	MOV.B   #pos1,R14
-	MOV.B	#0,R5
-  	MOV.B   bryanH(R5),0x0a20(R14)
-	MOV.B   bryanL(R5),0x0a20+1(R14)
 
-	MOV.B   #pos2,R14
-	MOV.B	#1,R5
-  	MOV.B   bryanH(R5),0x0a20(R14)
-	MOV.B   bryanL(R5),0x0a20+1(R14)
 
-	MOV.B   #pos3,R14
-	MOV.B	#2,R5
-  	MOV.B   bryanH(R5),0x0a20(R14)
-	MOV.B   bryanL(R5),0x0a20+1(R14)
+delay:  ;Delay for inputs
+        mov.w   #0xFFFF,R4 
+        jmp     decrement
+     
+     
+decrement:
+        dec     R4
+        jnz     decrement
+        ret
         
-        MOV.B   #pos4,R14
-        MOV.B   #3,R5
-        MOV.B   bryanH(R5),0x0a20(R14)
-	MOV.B   bryanL(R5),0x0a20+1(R14)
+
+checkStart:
+        mov.b   &P1IN,R5
+        and.b   #00000110B,R5
+        cmp.b   #00000010B,R5
+        ret
+
+
+run_instr:
+        ;Define R7 as the instruction register that holds the instruction, R4 is the counter
+        MOV.B   0(R4), R7               ;Assign R7 the value at R4 address
+        call    #read_instr             ;Read the instruction stored in R7
         
-        MOV.B   #pos5,R14
-        MOV.B   #4,R5
-        MOV.B   bryanH(R5),0x0a20(R14)
-	MOV.B   bryanL(R5),0x0a20+1(R14)
+        ;Check if end of instructions (0x1c10)
+        add     #1, R4   
+        mov.w   #0x1C11, R7   ; load the address into R7 to compare temporarily
+        cmp.w     R7, R4
+                      ;Increment address, important that its after cmp 
+        jne     run_instr               ;Loop
+        ret              
         
-        MOV.B   #pos6,R14
         
-        MOV.B   #0x00,0x0a20(R14)
-	MOV.B   #0x00,0x0a20+1(R14)
-        jmp     checkPressed
-	JMP	$
-	nop
-                ; (endless loop)
-        END
+read_instr:
+        MOV.B   R7, R8            ; Store entire R7 instruction onto R8, will remain constant
+
+
+        BIC.B   #00111111b, R7    ; select specific bits for LOAD  
+        CMP     #00000000b, R7    ; Check if instruction is LOAD
+        JEQ     load
+        
+        
+        MOV.B   R8, R7            ; Refresh R7
+
+
+        BIC.B   #00111111b, R7    ; select specific bits for STORE  
+        CMP     #01000000b, R7    ; Check if instruction is STORE
+        JEQ     store
+        
+        
+        MOV.B   R8, R7            ; Refresh R7
+        
+        
+        BIC.B   #00111111b, R7    ; select specific bits for ADD  
+        CMP     #10000000b, R7    ; Check if instruction is ADD
+        JEQ     sum
+              
+        ret
+        
+; Methods
+getAddress:
+      
+        MOV.B   R8, R7            ; Refresh R7
+        BIC.B   #11110000b, R7    ; Select specific bits for address
+        ADD.W   #origin, R7       ; Offset the address so it aligns with the RAM
+        ret
+        
+getRegister:    ;Gets register for certain instructions
+        
+        MOV.B   R8, R9            ; Refresh R9
+        BIC.B   #11001111b, R9    ; Select specific bits for register
+        ret
+
+; Register load methods
+loadR10:
+        MOV.B   0(R7), R10   
+        ret
+loadR11:
+        MOV.B   0(R7), R11 
+        ret
+loadR12:
+        MOV.B   0(R7), R12 
+        ret
+loadR13:
+        MOV.B   0(R7), R13 
+        ret
+    
+; Register Store methods
+storeR10:
+        MOV.B   R10, 0(R7)         ;Store the value inside the register onto the address
+        ret
+storeR11:
+        MOV.B   R11, 0(R7)         ;Store the value inside the register onto the address
+        ret
+storeR12:
+        MOV.B   R12, 0(R7)         ;Store the value inside the register onto the address
+        ret       
+storeR13:
+        MOV.B   R13, 0(R7)         ;Store the value inside the register onto the address
+        ret
+        
+; Instruction Sets, R8 holds instruction
+load:
+
+        call    #getAddress     ;Load address onto R7
+        call    #getRegister    ;Load register onto R9
+        
+        ;Load address onto specified Register (R10-R13)
+        CMP     #00000000b, R9  ;Load onto R10
+        JEQ     loadR10
+        
+        CMP     #00010000b, R9  ;Load onto R11
+        JEQ     loadR11
+        
+        CMP     #00100000b, R9  ;Load onto R12
+        JEQ     loadR12
+        
+        CMP     #00110000b, R9  ;Load onto R13
+        JEQ     loadR13
+        
+        ret
+
+store:
+        call    #getAddress     ;Load address onto R7
+        call    #getRegister    ;Load register onto R9
+        
+        ;Store register value onto address, conditionals
+        CMP     #00000000b, R9  
+        JEQ     storeR10
+        
+        CMP     #00010000b, R9  
+        JEQ     storeR11
+        
+        CMP     #00100000b, R9  
+        JEQ     storeR12
+        
+        CMP     #00110000b, R9  
+        JEQ     storeR13
+        
+        ret
+        
+;Objetives: Jump to the indicated address if the value of R3 is zero.
+;Preconditions: R3 contains a value to compare with zero, and "aaaa" represents 
+;               the destination address.
+;Postconditions: If the value of R3 is zero, the program counter (PC) is set to 
+;                the indicated address; otherwise, the subroutine returns 
+;                without changing the PC.
+;Author: Angel K. Vazquez Sanchez
+;Date: 11/abr/2023
+ 
+JR30:   
+        call    #getAddress         ;Load address onto R7
+
+        CMP     #0, R13             ;Compare the value of R13 with zero
+        JNZ     exitJR30           ;If the R3 is not zero, skip jmp instr.
+        MOV     R7, PC              ;Move to address 'aaaa' 
+exitJR30:
+        ret
+        
+;Objetives: Add the value of two registers and store the result in the 
+;           destination register.
+;Preconditions: The input registers and destination register must be 
+;               initialized with valid values before calling the subroutine. 
+;Postconditions: After the subroutine executes, the value in the destination 
+;                register will be the sum of the values in the two input 
+;                registers, and the program will return to the calling point. 
+;Author: Angel K. Vazquez Sanchez
+;Date: 12/abr/2023
+sum:
+        ;Dudas: How to access the value and the instruction
+        ;MOV.B Rdd, Rss              ;R[dd] <- R[dd] + R[ss]
+        ret
+        
+negate:
+        MOV.B   #0,R7           ;temporarily set R7 to 0 in order to index instr
+        MOV.B   instr(R7), R7   ;Set r7 to the value found in the instruction
+    
+        XOR.B   #0xFF, R7       ;Invert all bits 
+        INC.B   R7              ;Add 1 to R7 to get the two's complement
+        ret     
+shift:
+        MOV.B   #1,R7           ;temporarily set R7 to 1 in order to index instr
+        MOV.B   instr(R7), R7   ;Set r7 to the value found in the instruction
+        
+        RRC.B   R7              ;Shift one space to the right, store back in R7
+        ret   
+  
+END
+        
