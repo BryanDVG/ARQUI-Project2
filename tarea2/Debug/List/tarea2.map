@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR UBROF Linker V10.12.4.1422                          17/Apr/2023  22:04:55
+# IAR UBROF Linker V10.12.4.1422                          18/Apr/2023  09:13:50
 # Copyright 1987-2022 IAR Systems AB.
 #
 #    Target Cpu    =  MSP430
@@ -81,61 +81,75 @@
                 *                                      *
                 ****************************************
 
-ENTRY              SPACE  ADDRESS  KIND  TYPE  MODULE
------              -----  -------  ----  ----  ------
-__MSP430FR5922__           0x0000  Loc         main [0]
-_DATA20_HEAP_SIZE          0x0050  Pub         ?ABS_ENTRY_MOD [1]
-_DATA16_HEAP_SIZE          0x00A0  Pub         ?ABS_ENTRY_MOD [1]
-_STACK_SIZE                0x00A0  Pub         ?ABS_ENTRY_MOD [1]
-__iar_HWMUL                0x04C0  Pub         ?ABS_ENTRY_MOD [1]
-setUpPorts                 0x1C10  Loc         main [0]
-instr                      0x1C10  Loc         main [0]
-letra1H                    0x1C12  Loc         main [0]
-letra1L                    0x1C17  Loc         main [0]
-letra2H                    0x1C1C  Loc         main [0]
-letra2L                    0x1C21  Loc         main [0]
-letra3H                    0x1C26  Loc         main [0]
-letra3L                    0x1C2B  Loc         main [0]
-letra4H                    0x1C30  Loc         main [0]
-letra4L                    0x1C35  Loc         main [0]
-letra5H                    0x1C3A  Loc         main [0]
-letra5L                    0x1C3F  Loc         main [0]
-letra6H                    0x1C44  Loc         main [0]
-letra6L                    0x1C49  Loc         main [0]
-init                       0x4400  Loc         main [0]
-main                       0x4404  Pub         main [0]
-setupLCD                   0x4428  Loc         main [0]
-setUpP1                    0x443A  Loc         main [0]
-UnlockGPIO                 0x446C  Loc         main [0]
-LoadTestCases              0x448E  Loc         main [0]
-titleDisplay               0x452E  Loc         main [0]
-displayLCD                 0x458A  Loc         main [0]
-s2ToGoDisplay              0x4608  Loc         main [0]
-s2ToGo                     0x4672  Loc         main [0]
-checkPressed               0x468C  Loc         main [0]
-resetName                  0x46A4  Loc         main [0]
-delay                      0x46A8  Loc         main [0]
-decrement                  0x46AC  Loc         main [0]
-checkStart                 0x46B2  Loc         main [0]
-run_instr                  0x46BE  Loc         main [0]
-read_instr                 0x46D0  Loc         main [0]
-getAddress                 0x46F4  Loc         main [0]
-getRegister                0x4700  Loc         main [0]
-loadR10                    0x4708  Loc         main [0]
-loadR11                    0x470C  Loc         main [0]
-loadR12                    0x4710  Loc         main [0]
-loadR13                    0x4714  Loc         main [0]
-storeR10                   0x4718  Loc         main [0]
-storeR11                   0x471E  Loc         main [0]
-storeR12                   0x4724  Loc         main [0]
-storeR13                   0x472A  Loc         main [0]
-load                       0x4730  Loc         main [0]
-store                      0x4750  Loc         main [0]
-JR30                       0x4770  Loc         main [0]
-exitJR30                   0x477A  Loc         main [0]
-sum                        0x477C  Loc         main [0]
-negate                     0x477E  Loc         main [0]
-shift                      0x478A  Loc         main [0]
+ENTRY                 SPACE  ADDRESS  KIND  TYPE  MODULE
+-----                 -----  -------  ----  ----  ------
+__MSP430FR5922__              0x0000  Loc         main [0]
+_DATA20_HEAP_SIZE             0x0050  Pub         ?ABS_ENTRY_MOD [1]
+_DATA16_HEAP_SIZE             0x00A0  Pub         ?ABS_ENTRY_MOD [1]
+_STACK_SIZE                   0x00A0  Pub         ?ABS_ENTRY_MOD [1]
+__iar_HWMUL                   0x04C0  Pub         ?ABS_ENTRY_MOD [1]
+setUpPorts                    0x1C10  Loc         main [0]
+instr                         0x1C10  Loc         main [0]
+letra1H                       0x1C12  Loc         main [0]
+letra1L                       0x1C17  Loc         main [0]
+letra2H                       0x1C1C  Loc         main [0]
+letra2L                       0x1C21  Loc         main [0]
+letra3H                       0x1C26  Loc         main [0]
+letra3L                       0x1C2B  Loc         main [0]
+letra4H                       0x1C30  Loc         main [0]
+letra4L                       0x1C35  Loc         main [0]
+letra5H                       0x1C3A  Loc         main [0]
+letra5L                       0x1C3F  Loc         main [0]
+letra6H                       0x1C44  Loc         main [0]
+letra6L                       0x1C49  Loc         main [0]
+init                          0x4400  Loc         main [0]
+main                          0x4404  Pub         main [0]
+setupLCD                      0x4428  Loc         main [0]
+setUpP1                       0x443A  Loc         main [0]
+UnlockGPIO                    0x446C  Loc         main [0]
+LoadTestCases                 0x448E  Loc         main [0]
+titleDisplay                  0x452E  Loc         main [0]
+displayLCD                    0x458A  Loc         main [0]
+s2ToGoDisplay                 0x4608  Loc         main [0]
+s2ToGo                        0x4672  Loc         main [0]
+checkPressed                  0x468C  Loc         main [0]
+resetName                     0x46A4  Loc         main [0]
+delay                         0x46A8  Loc         main [0]
+decrement                     0x46AC  Loc         main [0]
+checkStart                    0x46B2  Loc         main [0]
+run_instr                     0x46BE  Loc         main [0]
+read_instr                    0x46D0  Loc         main [0]
+getAddress                    0x4730  Loc         main [0]
+getRegister                   0x473C  Loc         main [0]
+getRegister2                  0x4744  Loc         main [0]
+getRegister3                  0x474C  Loc         main [0]
+getRegisterValue              0x4754  Loc         main [0]
+getRegisterValue2             0x4770  Loc         main [0]
+exitRegisterValueR10          0x4788  Loc         main [0]
+exitRegisterValueR11          0x478C  Loc         main [0]
+exitRegisterValueR12          0x4790  Loc         main [0]
+exitRegisterValueR13          0x4794  Loc         main [0]
+loadR10                       0x4798  Loc         main [0]
+loadR11                       0x479C  Loc         main [0]
+loadR12                       0x47A0  Loc         main [0]
+loadR13                       0x47A4  Loc         main [0]
+storeR10                      0x47A8  Loc         main [0]
+storeR11                      0x47AE  Loc         main [0]
+storeR12                      0x47B4  Loc         main [0]
+storeR13                      0x47BA  Loc         main [0]
+setR10                        0x47C0  Loc         main [0]
+setR11                        0x47C4  Loc         main [0]
+setR12                        0x47C8  Loc         main [0]
+setR13                        0x47CC  Loc         main [0]
+load                          0x47D0  Loc         main [0]
+store                         0x47F0  Loc         main [0]
+sum                           0x4810  Loc         main [0]
+negate                        0x4834  Loc         main [0]
+shift                         0x4840  Loc         main [0]
+in                            0x484A  Loc         main [0]
+out                           0x484C  Loc         main [0]
+JR30                          0x484E  Loc         main [0]
+exitJR30                      0x4858  Loc         main [0]
 
 [0] = C:\Users\devan\OneDrive\Desktop\school\Arqui2\ARQUI-Project2-names\tarea2\Debug\Obj\asm.r43
 [1] = Command line (linker generated)
@@ -166,42 +180,56 @@ File: C:\Users\devan\OneDrive\Desktop\school\Arqui2\ARQUI-Project2-names\tarea2\
     --------------------------------------------------
        Segment part 1, <CODE> 1 [root]
                       (was CODE)
-       Address:  0x4400 Size: 0x394 Align: 2(1)
+       Address:  0x4400 Size: 0x45A Align: 2(1)
        Ref by:   Absolute parts
-      main                 0x4404  Pub
-      init                 0x4400  Loc
-      setupLCD             0x4428  Loc
-      setUpP1              0x443A  Loc
-      UnlockGPIO           0x446C  Loc
-      LoadTestCases        0x448E  Loc
-      titleDisplay         0x452E  Loc
-      checkPressed         0x468C  Loc
-      displayLCD           0x458A  Loc
-      resetName            0x46A4  Loc
-      delay                0x46A8  Loc
-      s2ToGoDisplay        0x4608  Loc
-      s2ToGo               0x4672  Loc
-      run_instr            0x46BE  Loc
-      decrement            0x46AC  Loc
-      checkStart           0x46B2  Loc
-      read_instr           0x46D0  Loc
-      load                 0x4730  Loc
-      store                0x4750  Loc
-      sum                  0x477C  Loc
-      getAddress           0x46F4  Loc
-      getRegister          0x4700  Loc
-      loadR10              0x4708  Loc
-      loadR11              0x470C  Loc
-      loadR12              0x4710  Loc
-      loadR13              0x4714  Loc
-      storeR10             0x4718  Loc
-      storeR11             0x471E  Loc
-      storeR12             0x4724  Loc
-      storeR13             0x472A  Loc
-      JR30                 0x4770  Loc
-      exitJR30             0x477A  Loc
-      negate               0x477E  Loc
-      shift                0x478A  Loc
+      main                  0x4404  Pub
+      init                  0x4400  Loc
+      setupLCD              0x4428  Loc
+      setUpP1               0x443A  Loc
+      UnlockGPIO            0x446C  Loc
+      LoadTestCases         0x448E  Loc
+      titleDisplay          0x452E  Loc
+      checkPressed          0x468C  Loc
+      displayLCD            0x458A  Loc
+      resetName             0x46A4  Loc
+      delay                 0x46A8  Loc
+      s2ToGoDisplay         0x4608  Loc
+      s2ToGo                0x4672  Loc
+      run_instr             0x46BE  Loc
+      decrement             0x46AC  Loc
+      checkStart            0x46B2  Loc
+      read_instr            0x46D0  Loc
+      load                  0x47D0  Loc
+      store                 0x47F0  Loc
+      sum                   0x4810  Loc
+      negate                0x4834  Loc
+      shift                 0x4840  Loc
+      in                    0x484A  Loc
+      out                   0x484C  Loc
+      JR30                  0x484E  Loc
+      getAddress            0x4730  Loc
+      getRegister           0x473C  Loc
+      getRegister2          0x4744  Loc
+      getRegister3          0x474C  Loc
+      getRegisterValue      0x4754  Loc
+      exitRegisterValueR10  0x4788  Loc
+      exitRegisterValueR11  0x478C  Loc
+      exitRegisterValueR12  0x4790  Loc
+      exitRegisterValueR13  0x4794  Loc
+      getRegisterValue2     0x4770  Loc
+      loadR10               0x4798  Loc
+      loadR11               0x479C  Loc
+      loadR12               0x47A0  Loc
+      loadR13               0x47A4  Loc
+      storeR10              0x47A8  Loc
+      storeR11              0x47AE  Loc
+      storeR12              0x47B4  Loc
+      storeR13              0x47BA  Loc
+      setR10                0x47C0  Loc
+      setR11                0x47C4  Loc
+      setR12                0x47C8  Loc
+      setR13                0x47CC  Loc
+      exitJR30              0x4858  Loc
 
       Absolute module symbols:
         __MSP430FR5922__  0x0000  Loc
@@ -235,12 +263,12 @@ File: C:\Users\devan\OneDrive\Desktop\school\Arqui2\ARQUI-Project2-names\tarea2\
 SEGMENT   SPACE    START/END ADDRESS      SIZE  TYPE  ALIGN
 -------   -----  ---------------------    ----  ----  -----
 CSTACK              0x2360 - 0x23FF       0xA0   rel   2(1)
-<CODE> 1            0x4400 - 0x4793      0x394   rel   2(1)
+<CODE> 1            0x4400 - 0x4859      0x45A   rel   2(1)
                                 0x1C10  0x1C4D  0x3E   aseg
                                 0xFFFE  0xFFFF   0x2   aseg
 
- 916 bytes of CODE memory (+ 64 absolute )
- 160 bytes of DATA memory
+ 1'114 bytes of CODE memory (+ 64 absolute )
+   160 bytes of DATA memory
 
 Errors: none
 Warnings: none

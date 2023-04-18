@@ -141,10 +141,10 @@ MOV.b #00000000b, &0x1c0f
 ;load test cases
 MOV.b #10h, &0x1c00             ;10     r1<-ram1[10h]
 MOV.b #5fh, &0x1c01             ;5f     ram16<-r1[10h]
-MOV.b #23h, &0x1c02             ;23     r2<-ram3[23h]
-MOV.b #98h, &0x1c03             ;98     r1<-r1[10h]+r2[23h]:r1[33h]
-MOV.b #11000001b, &0x1c04       ;c1     r1<-2s comp of r1[33h]:r1[??]
-MOV.b #11000110b, &0x1c05       ;c6     shr of r2[23h]:r2[??]
+MOV.b #00100010b, &0x1c02       ;22     r2<-ram3[22h]
+MOV.b #10011000b, &0x1c03       ;98     r1<-r1[10h]+r2[22h]:r1[32h]
+MOV.b #11000001b, &0x1c04       ;c1     r1<-2s comp of r1[32h]:r1[??]
+MOV.b #11000110b, &0x1c05       ;c6     shr of r2[22h]:r2[??]
 MOV.b #11001100b, &0x1c06       ;cc     r0<-in
 MOV.b #11100100b, &0x1c07       ;e4     out0 <-r1
 MOV.b #11101001b, &0x1c08       ;e9     out1 <-r2
@@ -337,7 +337,7 @@ run_instr:
         ;Check if end of instructions (0x1c10)
         add     #1, R4   
         mov.w   #0x1C11, R7   ; load the address into R7 to compare temporarily
-        cmp.w     R7, R4
+        cmp.w   R7, R4
                       ;Increment address, important that its after cmp 
         jne     run_instr               ;Loop
         ret              
@@ -366,7 +366,49 @@ read_instr:
         BIC.B   #00111111b, R7    ; select specific bits for ADD  
         CMP     #10000000b, R7    ; Check if instruction is ADD
         JEQ     sum
-              
+        
+        
+        MOV.B   R8, R7            ; Refresh R7
+
+
+        BIC.B   #00000011b, R7    ; select specific bits for NEGATE  
+        CMP     #11000000b, R7    ; Check if instruction is NEGATE
+        JEQ     negate
+        
+                
+        MOV.B   R8, R7            ; Refresh R7
+
+ 
+        BIC.B   #00000011b, R7    ; select specific bits for SHIFT RIGHT  
+        CMP     #11000100b, R7    ; Check if instruction is SHIFT RIGHT
+        JEQ     shift
+        
+        
+        MOV.B   R8, R7            ; Refresh R7
+
+        
+        BIC.B   #00000011b, R7    ; select specific bits for IN  
+        CMP     #10001100b, R7    ; Check if instruction is IN
+        JEQ     in
+        
+        
+        MOV.B   R8, R7            ; Refresh R7
+
+        
+        BIC.B   #00001111b, R7    ; select specific bits for OUT  
+        CMP     #11100000b, R7    ; Check if instruction is OUT
+        JEQ     out
+        
+        
+        MOV.B   R8, R7            ; Refresh R7
+        
+        
+        BIC.B   #00001111b, R7    ; select specific bits for JR30  
+        CMP     #11110000b, R7    ; Check if instruction is JR30
+        JEQ     JR30
+        
+
+        
         ret
         
 ; Methods
@@ -377,24 +419,82 @@ getAddress:
         ADD.W   #origin, R7       ; Offset the address so it aligns with the RAM
         ret
         
-getRegister:    ;Gets register for certain instructions
+getRegister:    ;Gets register for certain instructions at (--XX----)
         
         MOV.B   R8, R9            ; Refresh R9
         BIC.B   #11001111b, R9    ; Select specific bits for register
         ret
+        
+getRegister2:    ;Gets register for certain instructions at (----XX--)
+        
+        MOV.B   R8, R9            ; Refresh R9
+        BIC.B   #11110011b, R9    ; Select specific bits for register
+        ret
+        
+getRegister3:    ;Gets register for certain instructions at (------XX)
+        
+        MOV.B   R8, R9            ; Refresh R9
+        BIC.B   #11111100b, R9    ; Select specific bits for register
+        ret
 
+getRegisterValue:
+        call    #getRegister      ;Load register onto R9
+
+        CMP.B   #00000000b, R9  ;Get R10
+        JEQ     exitRegisterValueR10
+        
+        CMP.B   #00010000b, R9  ;Get R11
+        JEQ     exitRegisterValueR11
+     
+        CMP.B   #00100000b, R9  ;Get R12
+        JEQ     exitRegisterValueR12
+        
+        CMP.B   #00110000b, R9  ;Load onto R13
+        JEQ     exitRegisterValueR13
+        
+        ret
+        
+getRegisterValue2:
+        call    #getRegister2      ;Load register onto R9
+
+        CMP     #00000000b, R9  ;Get R10
+        JEQ     exitRegisterValueR10
+        
+        CMP     #00000100b, R9  ;Get R11
+        JEQ     exitRegisterValueR11
+        
+        CMP     #00001000b, R9  ;Get R12
+        JEQ     exitRegisterValueR12
+        
+        CMP     #00001100b, R9  ;Load onto R13
+        JEQ     exitRegisterValueR13
+        
+        ret
+
+exitRegisterValueR10:
+        MOV.B   R10, R9         ;Move R10 to R9
+        ret
+exitRegisterValueR11:
+        MOV.B   R11, R9         ;Move R11 to R9
+        ret
+exitRegisterValueR12:
+        MOV.B   R12, R9         ;Move R12 to R9
+        ret
+exitRegisterValueR13:
+        MOV.B   R13, R9         ;Move R13 to R9
+        ret
 ; Register load methods
 loadR10:
-        MOV.B   0(R7), R10   
+        MOV.B   @0(R7), R10   
         ret
 loadR11:
-        MOV.B   0(R7), R11 
+        MOV.B   @0(R7), R11 
         ret
 loadR12:
-        MOV.B   0(R7), R12 
+        MOV.B   @0(R7), R12 
         ret
 loadR13:
-        MOV.B   0(R7), R13 
+        MOV.B   @0(R7), R13 
         ret
     
 ; Register Store methods
@@ -409,6 +509,20 @@ storeR12:
         ret       
 storeR13:
         MOV.B   R13, 0(R7)         ;Store the value inside the register onto the address
+        ret
+; Register Set methods
+
+setR10:
+        MOV.B   R9, R10   
+        ret
+setR11:
+        MOV.B   R9, R11 
+        ret
+setR12:
+        MOV.B   R9, R12 
+        ret
+setR13:
+        MOV.B   R9, R13 
         ret
         
 ; Instruction Sets, R8 holds instruction
@@ -450,7 +564,62 @@ store:
         JEQ     storeR13
         
         ret
+
+
+;Objetives: Add the value of two registers and store the result in the 
+;           destination register.
+;Preconditions: The input registers and destination register must be 
+;               initialized with valid values before calling the subroutine. 
+;Postconditions: After the subroutine executes, the value in the destination 
+;                register will be the sum of the values in the two input 
+;                registers, and the program will return to the calling point. 
+;Authors: Angel K. Vazquez Sanchez, Devan A. Vazquez Rivera
+;Date: 12/abr/2023
+
+sum:
+        ;Get value R[dd]
+        call    #getRegisterValue
+        ;Get value R[SS]
+        MOV.B   R9, R5               ;Store R9 register instruction value onto R5
+        call    #getRegisterValue2
         
+        ADD.B   R5, R9               ;Sum both values into R9
+
+        ;Load address onto specified Register (R10-R13)
+        ; CMP using R5 as it holds the register instruction value
+
+        CMP     #00000000b, R5  ;set onto R10
+        JEQ     setR10         ; set operation takes value in R9 and puts in a register (R10-R13)
+        
+        CMP     #00010000b, R5  ;set onto R11
+        JEQ     setR11
+        
+        CMP     #00100000b, R5  ;set onto R12
+        JEQ     setR12
+        
+        CMP     #00110000b, R5  ;set onto R13
+        JEQ     setR13
+        ret
+        
+negate:
+        MOV.B   #0,R7           ;temporarily set R7 to 0 in order to index instr
+        MOV.B   instr(R7), R7   ;Set r7 to the value found in the instruction
+    
+        XOR.B   #0xFF, R7       ;Invert all bits 
+        INC.B   R7              ;Add 1 to R7 to get the two's complement
+        ret     
+shift:
+        MOV.B   #1,R7           ;temporarily set R7 to 1 in order to index instr
+        MOV.B   instr(R7), R7   ;Set r7 to the value found in the instruction
+        
+        RRC.B   R7              ;Shift one space to the right, store back in R7
+        ret   
+ 
+in:     
+        ret
+        
+out:
+        ret
 ;Objetives: Jump to the indicated address if the value of R3 is zero.
 ;Preconditions: R3 contains a value to compare with zero, and "aaaa" represents 
 ;               the destination address.
@@ -469,33 +638,8 @@ JR30:
 exitJR30:
         ret
         
-;Objetives: Add the value of two registers and store the result in the 
-;           destination register.
-;Preconditions: The input registers and destination register must be 
-;               initialized with valid values before calling the subroutine. 
-;Postconditions: After the subroutine executes, the value in the destination 
-;                register will be the sum of the values in the two input 
-;                registers, and the program will return to the calling point. 
-;Author: Angel K. Vazquez Sanchez
-;Date: 12/abr/2023
-sum:
-        ;Dudas: How to access the value and the instruction
-        ;MOV.B Rdd, Rss              ;R[dd] <- R[dd] + R[ss]
-        ret
-        
-negate:
-        MOV.B   #0,R7           ;temporarily set R7 to 0 in order to index instr
-        MOV.B   instr(R7), R7   ;Set r7 to the value found in the instruction
-    
-        XOR.B   #0xFF, R7       ;Invert all bits 
-        INC.B   R7              ;Add 1 to R7 to get the two's complement
-        ret     
-shift:
-        MOV.B   #1,R7           ;temporarily set R7 to 1 in order to index instr
-        MOV.B   instr(R7), R7   ;Set r7 to the value found in the instruction
-        
-        RRC.B   R7              ;Shift one space to the right, store back in R7
-        ret   
+
+
   
 END
         
