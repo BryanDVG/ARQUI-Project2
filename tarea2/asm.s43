@@ -470,6 +470,23 @@ getRegisterValue2:
         JEQ     exitRegisterValueR13
         
         ret
+getRegisterValue3:
+        call    #getRegister3      ;Load register onto R9
+
+        CMP     #00000000b, R9  ;Get R10
+        JEQ     exitRegisterValueR10
+        
+        CMP     #00000001b, R9  ;Get R11
+        JEQ     exitRegisterValueR11
+        
+        CMP     #00000010b, R9  ;Get R12
+        JEQ     exitRegisterValueR12
+        
+        CMP     #00000011b, R9  ;Load onto R13
+        JEQ     exitRegisterValueR13
+        
+        ret
+        
 
 exitRegisterValueR10:
         MOV.B   R10, R9         ;Move R10 to R9
@@ -602,17 +619,52 @@ sum:
         ret
         
 negate:
-        MOV.B   #0,R7           ;temporarily set R7 to 0 in order to index instr
-        MOV.B   instr(R7), R7   ;Set r7 to the value found in the instruction
-    
-        XOR.B   #0xFF, R7       ;Invert all bits 
-        INC.B   R7              ;Add 1 to R7 to get the two's complement
+       
+        call    #getRegister3         ;Get register instruction value and store in R9
+        MOV.B   R9, R5               ;Store R9 register instruction value onto R5
+        call    #getRegisterValue3       ;Get value R[SS], stored in R9
+        
+         ;operation
+        XOR.B   #0xFF, R9       ;Invert all bits 
+        INC.B   R9              ;Add 1 to R9 to get the two's complement
+
+        
+        ;set to assigned register
+        CMP     #00000000b, R5  ;set onto R10
+        JEQ     setR10         ; set operation takes value in R9 and puts in a register (R10-R13)
+        
+        CMP     #00000001b, R5  ;set onto R11
+        JEQ     setR11
+        
+        CMP     #00000010b, R5  ;set onto R12
+        JEQ     setR12
+        
+        CMP     #00000011b, R5  ;set onto R13
+        JEQ     setR13
+        
         ret     
 shift:
-        MOV.B   #1,R7           ;temporarily set R7 to 1 in order to index instr
-        MOV.B   instr(R7), R7   ;Set r7 to the value found in the instruction
         
-        RRC.B   R7              ;Shift one space to the right, store back in R7
+        call    #getRegister3         ;Get register instruction value and store in R9
+        MOV.B   R9, R5               ;Store R9 register instruction value onto R5    
+        call    #getRegisterValue3       ;Get value R[SS], stored in R9    
+        
+        ;operation
+        RRC.B   R9              ;Shift one space to the right, store back in R7
+        
+        ;set to assigned register
+        CMP     #00000000b, R5  ;set onto R10
+        JEQ     setR10         ; set operation takes value in R9 and puts in a register (R10-R13)
+        
+        CMP     #00000001b, R5  ;set onto R11
+        JEQ     setR11
+        
+        CMP     #00000010b, R5  ;set onto R12
+        JEQ     setR12
+        
+        CMP     #00000011b, R5  ;set onto R13
+        JEQ     setR13
+        
         ret   
  
 in:     
