@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <settings>
     <DebugChecksum>
-        <Checksum>3663294860</Checksum>
+        <Checksum>694426722</Checksum>
     </DebugChecksum>
     <Disassembly>
         <InstrCount>0</InstrCount>
@@ -84,10 +84,6 @@
         <LogFile>_ "$PROJ_DIR$\LogFile1.log"</LogFile>
         <Category2>_ 2</Category2>
     </LogFile>
-    <Registers>
-        <regBase0>R7 2</regBase0>
-        <regBase1>R5 2</regBase1>
-    </Registers>
     <PowerLog>
         <GraphEnabled>0</GraphEnabled>
         <LogEnabled>0</LogEnabled>
@@ -102,8 +98,7 @@
         <LiveFile />
     </PowerLog>
     <Breakpoints2>
-        <Bp0>_ 1 "STD_CODE2" "{$PROJ_DIR$\asm.s43}.683.1" 0 0 1 "" 0 ""</Bp0>
-        <Count>1</Count>
+        <Count>0</Count>
     </Breakpoints2>
     <FET>
         <Clock_mode>46</Clock_mode>

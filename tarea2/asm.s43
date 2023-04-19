@@ -18,8 +18,10 @@ pos6 	equ	7      ; Aplhanumeric A6 begins at S14
 
 origin  equ     0x1C00 ; Start of reserved RAM
 
+
 runningInDebugger db 0
-             
+       
+       
 DELAY_TIME  EQU   62500      ; Delay time of 0.5 seconds
 
 ;Define high and low byte values to generate chars J, N, F
@@ -41,8 +43,18 @@ letra5L	db 0x00,0x00,0x00,0x82,0x82
           ;   O    M   " "  " "  " "
 letra6H db 0xFC,0x6C,0x00,0x00,0x00
 letra6L	db 0x00,0xA0,0x00,0x00,0x00
+;                  
+; Define variables for the high and low bytes of each character pattern
+;                       0     1         2          3          4        5         6        7         8          9        A          B          C        D       E          F
+hexTop   db      11111100b,01100000b,11011011b,11110001b,01100111b,10110111b,10111111b,11100000b,11111111b,11110111b,11101111b,11110001b,10011100b,11110000b,10011111b,10001111b
+hexLow   db           0,        0,      0,          0,       0,         0,      0,         0,        0,         0,      0,      0x050,        0,      0x050,     0,        0
+twos     db      128,64,32,16,8,4,2,1
+marks    db      128,64,32,16
+bicsLed  db      01111111b,10111111b,11011111b,11101111b
+
 
 ;interrupt counter
+ALIGN   1
 intsCounter dw 0
                                         ; outside this module
         ORG     0FFFEh
@@ -148,11 +160,11 @@ MOV.b #10011000b, &0x1c03       ;98     r1<-r1[10h]+r2[22h]:r1[32h]
 MOV.b #11000001b, &0x1c04       ;c1     r1<-2s comp of r1[32h]:r1[??]
 MOV.b #11000110b, &0x1c05       ;c6     shr of r2[22h]:r2[??]
 MOV.b #11001101b, &0x1c06       ;cc     r1<-in
-MOV.b #11100100b, &0x1c07       ;e4     out0 <-r1
+MOV.b #11101001b, &0x1c07       ;e4     out0 <-r1
 MOV.b #11101001b, &0x1c08       ;e9     out1 <-r2
-MOV.b #11101010b, &0x1c09       ;ea     out2 <-r2
-;MOV.b #11110000b, &0x1c0a       ;f0     jump to ram1 if r3=0
-MOV.b #00000000b, &0x1c0b       ;
+MOV.b #11100110b, &0x1c09       ;ea     out2 <-r1
+MOV.b #11101010b, &0x1c0a       ;ea     out2 <-r2
+;MOV.b #11110000b, &0x1c0b       ;f0     jump to ram1 if r3=0
 MOV.b #00000000b, &0x1c0c       ;
 MOV.b #00000000b, &0x1c0d       ;
 MOV.b #00000000b, &0x1c0e       ;
@@ -678,72 +690,96 @@ in:
         CLR R15
         MOV.B   #00000010b,0x0a22(R15)
         ;------------
-        CLR R15
+        mov.b runningInDebugger, R15
+        cmp #1, R15       ; If in debugger, skip delay
+        jeq in_continue
+        
         call    #delay_ms                ;Delay for 3 seconds
         nop
         ;Clear R
-        CLR R15
-        MOV.B   #00000000b,0x0a22(R15)
-        ;-----------
-   ;polling
-        mov.b   &P1IN,R5
-        and.b   #00000110B,R5
-        ;check inputs
-        cmp.b   #00000110B,R5            ;check for none pressed
-        JEQ     fornone                  ;move 00 in R[dd]
-        cmp.b   #00000100B,R5            ;check for s1
-        JEQ     forS1                    ;move 01 in R[dd]
-        cmp.b   #00000010b,R5            ;check for s2
-        JEQ     forS2                    ;move 10 in R[dd]
-        cmp.b   #00001000b,R5            ;check for s1 and s2
-        JEQ     forboth                  ;move 11 in R[dd]
-        
-        ;move input val into temp register (R5)
-        fornone:
-                mov.b   #00b,R5
-                jmp     regSelect
-        forS1:
-                mov.b   #01b,R5
-                jmp     regSelect
-        forS2:
-                mov.b   #10b,R5
-                jmp     regSelect        
-        forboth:
-                mov.b   #11b,R5
-                jmp     regSelect       
-                ;move temp register into R[dd]
-        regSelect:     
-                
-                call    #getRegister3       ;Get value R[dd], stored in R9
+        in_continue:
+            CLR R15
+            MOV.B   #00000000b,0x0a22(R15)
+            ;-----------
+            ;polling
+            mov.b   &P1IN,R5
+            and.b   #00000110B,R5
+            ;check inputs
+            cmp.b   #00000110B,R5            ;check for none pressed
+            JEQ     for00                  ;move 00 in R[dd]
+            cmp.b   #00000100B,R5            ;check for s1
+            JEQ     for01                    ;move 01 in R[dd]
+            cmp.b   #00000010b,R5            ;check for s2
+            JEQ     for10                   ;move 10 in R[dd]
+            cmp.b   #00000000b,R5            ;check for s1 and s2
+            JEQ     for11                  ;move 11 in R[dd]
+            
+            ;move input val into temp register (R5)
+            for00:
+                    mov.b   #00b,R5
+                    jmp     regSelect
+            for01:
+                    mov.b   #01b,R5
+                    jmp     regSelect
+            for10:
+                    mov.b   #10b,R5
+                    jmp     regSelect        
+            for11:
+                    mov.b   #11b,R5
+                    jmp     regSelect       
+                    ;move temp register into R[dd]
+            regSelect:     
+                    
+                    call    #getRegister3       ;Get value R[dd], stored in R9
 
-                cmp.b   #00000000b,R9        ;checks if r0
-                jeq     forr0           ;selects r0
-                cmp.b   #00000001b,R9        ;checks if r1
-                jeq     forr1           ;selects r1
-                cmp.b   #00000010b,R9        ;checks if r2
-                jeq     forr2           ;selects r2
-                cmp.b   #00000011b,R9        ;checks if r3
-                jeq     forr3           ;selects r3
+                    cmp.b   #00000000b,R9        ;checks if r0
+                    jeq     forr0           ;selects r0
+                    cmp.b   #00000001b,R9        ;checks if r1
+                    jeq     forr1           ;selects r1
+                    cmp.b   #00000010b,R9        ;checks if r2
+                    jeq     forr2           ;selects r2
+                    cmp.b   #00000011b,R9        ;checks if r3
+                    jeq     forr3           ;selects r3
 
-                ret
-                ;moves input val to designated register
-     
-        forr0:
-              mov.b R5,R10      ;moves input to register
-              ret               ;done
-        forr1:
-              mov.b R5,R11      ;moves input to register
-              ret               ;done
-        forr2:
-              mov.b R6,R12      ;moves input to register
-              ret               ;done
-        forr3:
-              mov.b R5,R13      ;moves input to register
-              ret               ;done
-             
+                    ret
+                    ;moves input val to designated register
+         
+            forr0:
+                  mov.b R5,R10      ;moves input to register
+                  ret               ;done
+            forr1:
+                  mov.b R5,R11      ;moves input to register
+                  ret               ;done
+            forr2:
+                  mov.b R6,R12      ;moves input to register
+                  ret               ;done
+            forr3:
+                  mov.b R5,R13      ;moves input to register
+                  ret               ;done
+               
              
 out:
+        ;Output[aa] <- R[ss]
+        ;Outputs:
+        ; 00 -> Binary representation -> iterate through binary values, have an array that represents the addresses to set, index them accordingly
+        ; 01 -> Hex represenation     -> have an array that represents all the values from 0-f, first 8 bits of the word represent the first hex value, and next 8 bits represent the second hex value
+        ;                                mask the value and assign to a specified Hex value (16 of them / or 5 if including decimal), have an array that links the hex value to their output
+
+        ; 10 -> decimal represenation -> convert hex value into 'decimal' value (will still be considered hex, but if intepreted bit by bit, it should act the same as decimal).
+        ;                                iterate through the values, index it with the table and output it
+        
+        call   #getRegister3         ;Get register instruction value and store in R9
+        
+        cmp     #00000000b,R9   ;R7
+        jeq     ledDisplay
+        
+        cmp     #00000001b, R9
+        jeq     hexDisplay
+     
+        cmp     #00000010b,R9
+        jeq     decimalDisplay
         ret
+        
 ;Objetives: Jump to the indicated address if the value of R3 is zero.
 ;Preconditions: R3 contains a value to compare with zero, and "aaaa" represents 
 ;               the destination address.
@@ -765,6 +801,7 @@ exitJR30:
         
 
 
+; Delays
 delay_ms:
     mov     #0, intsCounter                   ;Clear intsCounter
     mov.w   #DELAY_TIME, R15                  ; Load delay time into register
@@ -776,19 +813,197 @@ delay_ms:
     mov.w   R15, &TA0CCR0                     ; Set timer period for 3 second delay
 
     ; Wait for 3 seconds
-    loop:
+    waitLoop:
         bit.w   #CCIFG, &TA0CCTL0  ; Check timer interrupt flag
         jnz     endloop            ; Exit loop if flag is set
-        jmp     loop               ; Continue looping
+        jmp     waitLoop               ; Continue looping
     endloop:
 
       bic.w     #CCIFG, &TA0CCTL0     ; Clear timer interrupt flag
       
       inc       intsCounter           ;increment intsCounter, 6 cycles should sum to 3 seconds
       cmp       #6, intsCounter       ; if 6 cycles are complete, return
-      jne       loop
+      jne       waitLoop
       
       ret
+      
+      
+delay1s:        ;0.1s delay for sub out 3 (decrements)
+    mov     #0, intsCounter                     ;Clear timerCount
+    mov.w   #12500, R5                         ; Load delay time into register
+; Initialize Timer_A0 module
+; mov.w   #CCIE, &TA0CCTL0                   ; enable TACCR0
+    mov.w   #TASSEL_2 + MC_1 + ID_3, &TA0CTL    ; Timer source = SMCLK, Up mode, Clock divider = 8
+    nop
+    mov.w   R5, &TA0CCR0                        ; Set timer period for .1 second delay
+
+    ; Wait for 0.1 seconds
+    timeloopB:
+        bit.w   #CCIFG, &TA0CCTL0               ; Check timer interrupt flag
+        jnz     endloopB                        ; Exit loop if flag is set
+        jmp     timeloopB                       ; Continue looping
+    endloopB:
+
+      bic.w     #CCIFG, &TA0CCTL0               ; Clear timer interrupt flag
+      
+      inc       intsCounter                     ;increment timerCount, 1 cycles should sum to .1 seconds
+      cmp       #1, intsCounter                 ; if .1 cycles are complete, return
+      jne       timeloopB
+      
+      ret  
+      
+;LCD out methods
+hexDisplay:
+    
+    ;call   #extractRA ;stored in R15
+    call   #getRegisterValue2           ;get register value, stored to R9
+    mov.b  R9, R15                      ;Store in R15
+    
+    
+    push.b R15
+    bic    #11110000b,R15
+    mov.b  R15,R14
+    pop.b  R15
+    rra    R15
+    rra    R15
+    rra    R15
+    rra    R15
+    bic    #11110000b,R15
+    mov.b  R15,R9
+    
+    MOV.W   #2 , &LCDCMEMCTL ;CLEAR LCD
+    mov.b   hexTop(R14), &0xA27
+    mov.b   hexLow(R14), &0xA28
+    mov.b   hexTop(R9), &0xA2E
+    mov.b   hexLow(R9), &0xA2F
+    ret
+    
+ledDisplay:
+    call    #getRegisterValue2  ;store in r9
+    mov.b  R9, R15              ;re-store to r15
+    
+    push.b  R15
+    mov.b   #0,R14
+    bic.b   #01111111b, R15
+    rra     R15
+    rra     R15
+    add     R15,R14
+    pop.b   R15
+    push.b  R15
+    bic.b   #11011111b, R15
+    rla     R15
+    add     R15,R14
+    pop.b   R15
+    push.b  R15
+    bic.b   #11110111b, R15
+    rla     R15
+    rla     R15
+    rla     R15
+    rla     R15
+    add     R15,R14
+    pop.b   R15
+    push.b  R15
+    bic.b   #11111101b, R15
+    rla     R15
+    rla     R15
+    rla     R15
+    
+
+    
+    
+    add     R15,R14
+    
+    ;For Red part of the Display
+    pop.b   R15
+    push.b  R15
+    mov.b   #0,R9
+    bic.b   #10111111b, R15
+    rra     R15
+    add     R15,R9
+    pop.b   R15
+    push.b  R15
+    bic.b   #11101111b, R15
+    rla     R15
+    rla     R15
+    add     R15,R9
+    pop.b   R15
+    push.b  R15
+    bic.b   #11111011b, R15
+    rla     R15
+    rla     R15
+    rla     R15
+    rla     R15
+    rla     R15
+    add     R15,R9
+    pop.b   R15
+    push.b  R15
+    bic.b   #11111110b, R15
+    rla     R15
+    rla     R15
+    rla     R15
+    rla     R15
+    add     R15,R9
+    pop.b   R15
+    
+    MOV.W   #2 , &LCDCMEMCTL ;CLEAR LCD
+    mov.b   R14,&0xA31
+ 
+    mov.b   R9, &0xA2D
+    ret
+
+decimalDisplay:
+    call   #getRegisterValue2
+    MOV.W   #2 , &LCDCMEMCTL ;CLEAR LCD
+    mov.b  R9, R15
+decimalDisplayLoop:
+
+     call #decimalConverter
+     
+     mov.b runningInDebugger, R6
+     cmp #1, R6       ; If in debugger, skip delay
+     jeq fin
+     
+     cmp #0, R15
+     jeq fin
+     call #delay1s
+     dec   R15
+     cmp   #0, R15
+     jc    decimalDisplayLoop
+     ret
+fin: 
+     ret
+decimalConverter:
+    push.b  R15
+    mov.b  #0, R6
+    mov.b  #0, R9
+    mov.b  #0, R14
+loop:
+    cmp    #100, R15
+    jc     sub100
+    cmp    #10, R15
+    jc     sub10
+    cmp    #1, R15
+    jc     sub1
+    
+    mov.b  hexTop(R6), &0xA29
+    mov.b  hexTop(R9), &0xA25
+    mov.b  hexTop(R14), &0xA23
+    mov.b  #00000001b,  &0xA26
+    pop.b  R15
+    ret
+sub100:
+    sub.b  #100, R15
+    inc  R6
+    jmp loop
+sub10:
+    sub.b  #10, R15
+    inc R9
+    jmp loop
+sub1:
+    sub.b  #1, R15
+    inc R14
+    jmp loop
+    ret
     
   
 END
