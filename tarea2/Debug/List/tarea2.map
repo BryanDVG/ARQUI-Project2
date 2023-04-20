@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR UBROF Linker V10.12.4.1422                          18/Apr/2023  22:02:17
+# IAR UBROF Linker V10.12.4.1422                          20/Apr/2023  00:45:42
 # Copyright 1987-2022 IAR Systems AB.
 #
 #    Target Cpu    =  MSP430
@@ -114,75 +114,75 @@ setupLCD                      0x4428  Loc         main
 setUpP1                       0x443A  Loc         main
 UnlockGPIO                    0x446C  Loc         main
 LoadTestCases                 0x448E  Loc         main
-titleDisplay                  0x452A  Loc         main
-displayLCD                    0x4586  Loc         main
-s2ToGoDisplay                 0x4604  Loc         main
-s2ToGo                        0x466E  Loc         main
-checkPressed                  0x4688  Loc         main
-resetName                     0x46A0  Loc         main
-delay                         0x46A4  Loc         main
-decrement                     0x46A8  Loc         main
-checkStart                    0x46AE  Loc         main
-run_instr                     0x46BA  Loc         main
-read_instr                    0x46D2  Loc         main
-getAddress                    0x4732  Loc         main
-getRegister                   0x473E  Loc         main
-getRegister2                  0x4746  Loc         main
-getRegister3                  0x474E  Loc         main
-getRegisterValue              0x4756  Loc         main
-getRegisterValue2             0x4772  Loc         main
-getRegisterValue3             0x478A  Loc         main
-exitRegisterValueR10          0x47A2  Loc         main
-exitRegisterValueR11          0x47A6  Loc         main
-exitRegisterValueR12          0x47AA  Loc         main
-exitRegisterValueR13          0x47AE  Loc         main
-loadR10                       0x47B2  Loc         main
-loadR11                       0x47B6  Loc         main
-loadR12                       0x47BA  Loc         main
-loadR13                       0x47BE  Loc         main
-storeR10                      0x47C2  Loc         main
-storeR11                      0x47C8  Loc         main
-storeR12                      0x47CE  Loc         main
-storeR13                      0x47D4  Loc         main
-setR10                        0x47DA  Loc         main
-setR11                        0x47DE  Loc         main
-setR12                        0x47E2  Loc         main
-setR13                        0x47E6  Loc         main
-load                          0x47EA  Loc         main
-store                         0x480A  Loc         main
-sum                           0x482A  Loc         main
-negate                        0x484E  Loc         main
-shift                         0x4870  Loc         main
-in                            0x4890  Loc         main
-in_continue                   0x48A4  Loc         main
-for00                         0x48C4  Loc         main
-for01                         0x48C8  Loc         main
-for10                         0x48CC  Loc         main
-for11                         0x48D0  Loc         main
-regSelect                     0x48D6  Loc         main
-forr0                         0x48EE  Loc         main
-forr1                         0x48F2  Loc         main
-forr2                         0x48F6  Loc         main
-forr3                         0x48FA  Loc         main
-out                           0x48FE  Loc         main
-JR30                          0x4910  Loc         main
-exitJR30                      0x491C  Loc         main
-delay_ms                      0x491E  Loc         main
-waitLoop                      0x4932  Loc         main
-endloop                       0x493A  Loc         main
-delay1s                       0x494C  Loc         main
-timeloopB                     0x4960  Loc         main
-endloopB                      0x4968  Loc         main
-hexDisplay                    0x4978  Loc         main
-ledDisplay                    0x49B4  Loc         main
-decimalDisplay                0x4A48  Loc         main
-decimalDisplayLoop            0x4A52  Loc         main
-fin                           0x4A6E  Loc         main
-decimalConverter              0x4A70  Loc         main
-loop                          0x4A78  Loc         main
-sub100                        0x4AA2  Loc         main
-sub10                         0x4AAA  Loc         main
-sub1                          0x4AB2  Loc         main
+titleDisplay                  0x4532  Loc         main
+displayLCD                    0x458E  Loc         main
+s2ToGoDisplay                 0x460C  Loc         main
+s2ToGo                        0x4676  Loc         main
+checkPressed                  0x4690  Loc         main
+resetName                     0x46A8  Loc         main
+delay                         0x46AC  Loc         main
+decrement                     0x46B0  Loc         main
+checkStart                    0x46B6  Loc         main
+run_instr                     0x46C2  Loc         main
+read_instr                    0x46DC  Loc         main
+getAddress                    0x473C  Loc         main
+getRegister                   0x4748  Loc         main
+getRegister2                  0x4750  Loc         main
+getRegister3                  0x4758  Loc         main
+getRegisterValue              0x4760  Loc         main
+getRegisterValue2             0x477C  Loc         main
+getRegisterValue3             0x4794  Loc         main
+exitRegisterValueR10          0x47AC  Loc         main
+exitRegisterValueR11          0x47B0  Loc         main
+exitRegisterValueR12          0x47B4  Loc         main
+exitRegisterValueR13          0x47B8  Loc         main
+loadR10                       0x47BC  Loc         main
+loadR11                       0x47C0  Loc         main
+loadR12                       0x47C4  Loc         main
+loadR13                       0x47C8  Loc         main
+storeR10                      0x47CC  Loc         main
+storeR11                      0x47D2  Loc         main
+storeR12                      0x47D8  Loc         main
+storeR13                      0x47DE  Loc         main
+setR10                        0x47E4  Loc         main
+setR11                        0x47E8  Loc         main
+setR12                        0x47EC  Loc         main
+setR13                        0x47F0  Loc         main
+load                          0x47F4  Loc         main
+store                         0x4814  Loc         main
+sum                           0x4834  Loc         main
+negate                        0x4858  Loc         main
+shift                         0x487A  Loc         main
+in                            0x489A  Loc         main
+in_continue                   0x48AE  Loc         main
+for00                         0x48CE  Loc         main
+for01                         0x48D2  Loc         main
+for10                         0x48D6  Loc         main
+for11                         0x48DA  Loc         main
+regSelect                     0x48E0  Loc         main
+forr0                         0x48F8  Loc         main
+forr1                         0x48FC  Loc         main
+forr2                         0x4900  Loc         main
+forr3                         0x4904  Loc         main
+out                           0x4908  Loc         main
+JR30                          0x491A  Loc         main
+exitJR30                      0x4926  Loc         main
+delay_ms                      0x4928  Loc         main
+waitLoop                      0x493C  Loc         main
+endloop                       0x4944  Loc         main
+delay1s                       0x4956  Loc         main
+timeloopB                     0x496A  Loc         main
+endloopB                      0x4972  Loc         main
+hexDisplay                    0x4982  Loc         main
+ledDisplay                    0x49BE  Loc         main
+decimalDisplay                0x4A52  Loc         main
+decimalDisplayLoop            0x4A5C  Loc         main
+fin                           0x4A78  Loc         main
+decimalConverter              0x4A7A  Loc         main
+loop                          0x4A82  Loc         main
+sub100                        0x4AAC  Loc         main
+sub10                         0x4AB4  Loc         main
+sub1                          0x4ABC  Loc         main
 
 [0] = Command line (linker generated)
 
@@ -212,7 +212,7 @@ File: C:\Users\devan\OneDrive\Desktop\school\Arqui2\ARQUI-Project2-main\tarea2\D
     --------------------------------------------------
        Segment part 1, <CODE> 1 [root]
                       (was CODE)
-       Address:  0x4400 Size: 0x6BA Align: 2(1)
+       Address:  0x4400 Size: 0x6C4 Align: 2(1)
        Ref by:   Absolute parts
       main                  0x4404  Pub
       init                  0x4400  Loc
@@ -220,75 +220,75 @@ File: C:\Users\devan\OneDrive\Desktop\school\Arqui2\ARQUI-Project2-main\tarea2\D
       setUpP1               0x443A  Loc
       UnlockGPIO            0x446C  Loc
       LoadTestCases         0x448E  Loc
-      titleDisplay          0x452A  Loc
-      checkPressed          0x4688  Loc
-      displayLCD            0x4586  Loc
-      resetName             0x46A0  Loc
-      delay                 0x46A4  Loc
-      s2ToGoDisplay         0x4604  Loc
-      s2ToGo                0x466E  Loc
-      run_instr             0x46BA  Loc
-      decrement             0x46A8  Loc
-      checkStart            0x46AE  Loc
-      read_instr            0x46D2  Loc
-      load                  0x47EA  Loc
-      store                 0x480A  Loc
-      sum                   0x482A  Loc
-      negate                0x484E  Loc
-      shift                 0x4870  Loc
-      in                    0x4890  Loc
-      out                   0x48FE  Loc
-      JR30                  0x4910  Loc
-      getAddress            0x4732  Loc
-      getRegister           0x473E  Loc
-      getRegister2          0x4746  Loc
-      getRegister3          0x474E  Loc
-      getRegisterValue      0x4756  Loc
-      exitRegisterValueR10  0x47A2  Loc
-      exitRegisterValueR11  0x47A6  Loc
-      exitRegisterValueR12  0x47AA  Loc
-      exitRegisterValueR13  0x47AE  Loc
-      getRegisterValue2     0x4772  Loc
-      getRegisterValue3     0x478A  Loc
-      loadR10               0x47B2  Loc
-      loadR11               0x47B6  Loc
-      loadR12               0x47BA  Loc
-      loadR13               0x47BE  Loc
-      storeR10              0x47C2  Loc
-      storeR11              0x47C8  Loc
-      storeR12              0x47CE  Loc
-      storeR13              0x47D4  Loc
-      setR10                0x47DA  Loc
-      setR11                0x47DE  Loc
-      setR12                0x47E2  Loc
-      setR13                0x47E6  Loc
-      in_continue           0x48A4  Loc
-      delay_ms              0x491E  Loc
-      for00                 0x48C4  Loc
-      for01                 0x48C8  Loc
-      for10                 0x48CC  Loc
-      for11                 0x48D0  Loc
-      regSelect             0x48D6  Loc
-      forr0                 0x48EE  Loc
-      forr1                 0x48F2  Loc
-      forr2                 0x48F6  Loc
-      forr3                 0x48FA  Loc
-      ledDisplay            0x49B4  Loc
-      hexDisplay            0x4978  Loc
-      decimalDisplay        0x4A48  Loc
-      exitJR30              0x491C  Loc
-      waitLoop              0x4932  Loc
-      endloop               0x493A  Loc
-      delay1s               0x494C  Loc
-      timeloopB             0x4960  Loc
-      endloopB              0x4968  Loc
-      decimalDisplayLoop    0x4A52  Loc
-      decimalConverter      0x4A70  Loc
-      fin                   0x4A6E  Loc
-      loop                  0x4A78  Loc
-      sub100                0x4AA2  Loc
-      sub10                 0x4AAA  Loc
-      sub1                  0x4AB2  Loc
+      titleDisplay          0x4532  Loc
+      checkPressed          0x4690  Loc
+      displayLCD            0x458E  Loc
+      resetName             0x46A8  Loc
+      delay                 0x46AC  Loc
+      s2ToGoDisplay         0x460C  Loc
+      s2ToGo                0x4676  Loc
+      run_instr             0x46C2  Loc
+      decrement             0x46B0  Loc
+      checkStart            0x46B6  Loc
+      read_instr            0x46DC  Loc
+      load                  0x47F4  Loc
+      store                 0x4814  Loc
+      sum                   0x4834  Loc
+      negate                0x4858  Loc
+      shift                 0x487A  Loc
+      in                    0x489A  Loc
+      out                   0x4908  Loc
+      JR30                  0x491A  Loc
+      getAddress            0x473C  Loc
+      getRegister           0x4748  Loc
+      getRegister2          0x4750  Loc
+      getRegister3          0x4758  Loc
+      getRegisterValue      0x4760  Loc
+      exitRegisterValueR10  0x47AC  Loc
+      exitRegisterValueR11  0x47B0  Loc
+      exitRegisterValueR12  0x47B4  Loc
+      exitRegisterValueR13  0x47B8  Loc
+      getRegisterValue2     0x477C  Loc
+      getRegisterValue3     0x4794  Loc
+      loadR10               0x47BC  Loc
+      loadR11               0x47C0  Loc
+      loadR12               0x47C4  Loc
+      loadR13               0x47C8  Loc
+      storeR10              0x47CC  Loc
+      storeR11              0x47D2  Loc
+      storeR12              0x47D8  Loc
+      storeR13              0x47DE  Loc
+      setR10                0x47E4  Loc
+      setR11                0x47E8  Loc
+      setR12                0x47EC  Loc
+      setR13                0x47F0  Loc
+      in_continue           0x48AE  Loc
+      delay_ms              0x4928  Loc
+      for00                 0x48CE  Loc
+      for01                 0x48D2  Loc
+      for10                 0x48D6  Loc
+      for11                 0x48DA  Loc
+      regSelect             0x48E0  Loc
+      forr0                 0x48F8  Loc
+      forr1                 0x48FC  Loc
+      forr2                 0x4900  Loc
+      forr3                 0x4904  Loc
+      ledDisplay            0x49BE  Loc
+      hexDisplay            0x4982  Loc
+      decimalDisplay        0x4A52  Loc
+      exitJR30              0x4926  Loc
+      waitLoop              0x493C  Loc
+      endloop               0x4944  Loc
+      delay1s               0x4956  Loc
+      timeloopB             0x496A  Loc
+      endloopB              0x4972  Loc
+      decimalDisplayLoop    0x4A5C  Loc
+      decimalConverter      0x4A7A  Loc
+      fin                   0x4A78  Loc
+      loop                  0x4A82  Loc
+      sub100                0x4AAC  Loc
+      sub10                 0x4AB4  Loc
+      sub1                  0x4ABC  Loc
 
       Absolute module symbols:
         __MSP430FR5922__   0x0000  Loc
@@ -328,11 +328,11 @@ File: C:\Users\devan\OneDrive\Desktop\school\Arqui2\ARQUI-Project2-main\tarea2\D
 SEGMENT   SPACE    START/END ADDRESS      SIZE  TYPE  ALIGN
 -------   -----  ---------------------    ----  ----  -----
 CSTACK              0x2360 - 0x23FF       0xA0   rel   2(1)
-<CODE> 1            0x4400 - 0x4AB9      0x6BA   rel   2(1)
+<CODE> 1            0x4400 - 0x4AC3      0x6C4   rel   2(1)
                                 0x1C10  0x1C7F  0x70   aseg
                                 0xFFFE  0xFFFF   0x2   aseg
 
- 1'722 bytes of CODE memory (+ 114 absolute )
+ 1'732 bytes of CODE memory (+ 114 absolute )
    160 bytes of DATA memory
 
 Errors: none

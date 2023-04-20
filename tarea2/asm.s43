@@ -1,3 +1,5 @@
+
+
 #include "msp430.h"                     ; #define controlled include file
 
         NAME    main                    ; module name
@@ -153,27 +155,64 @@ MOV.b #00000000b, &0x1c0e
 MOV.b #00000000b, &0x1c0f
 
 ;load test cases
-MOV.b #10h, &0x1c00             ;10     r1<-ram1[10h]
-MOV.b #5fh, &0x1c01             ;5f     ram16<-r1[10h]
-MOV.b #00100010b, &0x1c02       ;22     r2<-ram3[22h]
-MOV.b #10011000b, &0x1c03       ;98     r1<-r1[10h]+r2[22h]:r1[32h]
-MOV.b #11000001b, &0x1c04       ;c1     r1<-2s comp of r1[32h]:r1[??]
-MOV.b #11000110b, &0x1c05       ;c6     shr of r2[22h]:r2[??]
-MOV.b #11001101b, &0x1c06       ;cc     r1<-in
-MOV.b #11101001b, &0x1c07       ;e4     out0 <-r1
-MOV.b #11101001b, &0x1c08       ;e9     out1 <-r2
-MOV.b #11100110b, &0x1c09       ;ea     out2 <-r1
-MOV.b #11101010b, &0x1c0a       ;ea     out2 <-r2
+
+
+;display hex
+
+MOV.b #00100010b, &0x1c00       ;22     r2<-ram3[cch]
+MOV.b #11101001b, &0x1c01       ;e9     out1 <-r2
+MOV.b #11001100b, &0x1c02       ;cc     r0<-in
+
+;Display binary
+MOV.b #00010000b, &0x1c03       ;10     r1<-ram1[10h]
+MOV.b #11101000b, &0x1c04       ;e4     out0 <-r1
+
+
+;display timer
+MOV.b #11001100b, &0x1c05       ;cc     r0<-in
+MOV.b #00100011b, &0x1c06       ;22     r2<-ram4
+MOV.b #11101010b, &0x1c07       ;ea     out2 <-r2
+MOV.b #11001100b, &0x1c08       ;cc     r0<-in
+;display ADD
+MOV.b #10011000b, &0x1c09       ;98     r1<-r1[10h]+r2[22h]:r1[32h]
+
+;display NEG
+MOV.b #11000001b, &0x1c0a       ;c1     r1<-2s comp of r1[32h]:r1[??]
+
+;Display SHR
+MOV.b #11000101b, &0x1c0b       ;c6     shr of r1[22h]:r1[??]
+
+
+MOV.b #11101001b, &0x1c0c       ;e9     out1 <-r2
+MOV.b #11001100b, &0x1c0d       ;cc     r0<-in
+
+MOV.b #11110000b, &0x1c0e       ;f0     jump to ram1 if r3=0
+
+;MOV.b #5fh, &0x1c01             ;5f     ram16<-r1[10h]
+;MOV.b #00100010b, &0x1c02       ;22     r2<-ram3[22h]
+;MOV.b #10011000b, &0x1c03       ;98     r1<-r1[10h]+r2[22h]:r1[32h]
+;MOV.b #11000001b, &0x1c04       ;c1     r1<-2s comp of r1[32h]:r1[??]
+;MOV.b #11000110b, &0x1c05       ;c6     shr of r2[22h]:r2[??]
+;MOV.b #11001101b, &0x1c06       ;cc     r1<-in
+;MOV.b #11101001b, &0x1c07       ;e4     out0 <-r1
+;MOV.b #11101001b, &0x1c08       ;e9     out1 <-r2
+;MOV.b #11100110b, &0x1c09       ;ea     out2 <-r1
+;MOV.b #11101010b, &0x1c0a       ;ea     out2 <-r2
 ;MOV.b #11110000b, &0x1c0b       ;f0     jump to ram1 if r3=0
-MOV.b #00000000b, &0x1c0c       ;
-MOV.b #00000000b, &0x1c0d       ;
-MOV.b #00000000b, &0x1c0e       ;
-MOV.b #00000000b, &0x1c0f       ;
+;MOV.b #00000000b, &0x1c0c       ;
+;MOV.b #00000000b, &0x1c0d       ;
+;MOV.b #00000000b, &0x1c0e       ;
+;MOV.b #00000000b, &0x1c0f       ;
 
 ret
 
 ;-------------------------------------------------------------------------------
 
+;Objetives: Display CPURUM to the LED display
+;Preconditions: R14 is not in use.
+;Postconditions: Displays CPURUM onto the LED display
+;Author: Bryan Vega
+;Date: 11/abr/2023
 titleDisplay:
 
         MOV.B   #pos1,R14
@@ -206,7 +245,13 @@ titleDisplay:
         MOV.B   #0x6C,0x0a20(R14)
 	MOV.B   #0xA0,0x0a20+1(R14)
         ret
-        
+
+;Objetives: Dynamic subroutine to display member names.
+;Preconditions: R6 is set to index the proper name, R14 is set to index the proper name
+;Postconditions: Displays a member name on to the LED display
+;Author: Bryan Vega
+;Date: 11/abr/2023
+
 displayLCD:
         MOV.W   #2 , &LCDCMEMCTL ;CLEAR LCD
 	;Write Name on display's A1-A6 Alphanumeric chars
@@ -254,7 +299,13 @@ displayLCD:
         ;jeq     checkStart
         
         jmp     checkPressed
-        
+ 
+;Objetives: Display S2ToGo on LED display
+;Preconditions: 
+;Postconditions: 
+;Author: Bryan Vega
+;Date: 11/abr/2023
+
 s2ToGoDisplay:  
         mov.b   #0x0000,R6      ; set display setting so s2togo
           
@@ -707,13 +758,13 @@ in:
             and.b   #00000110B,R5
             ;check inputs
             cmp.b   #00000110B,R5            ;check for none pressed
-            JEQ     for00                  ;move 00 in R[dd]
-            cmp.b   #00000100B,R5            ;check for s1
-            JEQ     for01                    ;move 01 in R[dd]
-            cmp.b   #00000010b,R5            ;check for s2
-            JEQ     for10                   ;move 10 in R[dd]
-            cmp.b   #00000000b,R5            ;check for s1 and s2
             JEQ     for11                  ;move 11 in R[dd]
+            cmp.b   #00000100B,R5            ;check for s1
+            JEQ     for10                    ;move 10 in R[dd]
+            cmp.b   #00000010b,R5            ;check for s2
+            JEQ     for01                   ;move 01 in R[dd]
+            cmp.b   #00000000b,R5            ;check for s1 and s2
+            JEQ     for00                  ;move 00 in R[dd]
             
             ;move input val into temp register (R5)
             for00:
@@ -854,7 +905,7 @@ delay1s:        ;0.1s delay for sub out 3 (decrements)
       ret  
       
 ;LCD out methods
-hexDisplay:
+hexDisplay: 
     
     ;call   #extractRA ;stored in R15
     call   #getRegisterValue2           ;get register value, stored to R9
