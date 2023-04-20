@@ -347,6 +347,7 @@ checkStart:
 
 run_instr:
         ;Define R7 as the instruction register that holds the instruction, R4 is the counter
+        CLR     R10                     ;Clear R10 always
         MOV.B   0(R4), R7               ;Assign R7 the value at R4 address
         call    #read_instr             ;Read the instruction stored in R7
         
