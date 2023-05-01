@@ -1,14 +1,8 @@
-<<<<<<< HEAD
+
 
 
 #include "msp430.h"                     ; #define controlled include file
-=======
-;Integrantes
-;Angel K. Vazquez 802-18-6281
-;Devan Vazquez 
-;Bryan Vega
-#include msp430.h                     ; #define controlled include file
->>>>>>> parent of 5e73672 (Fixed minor error in include)
+
 
         NAME    main                    ; module name
 
