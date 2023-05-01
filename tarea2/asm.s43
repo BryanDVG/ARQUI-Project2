@@ -2,7 +2,7 @@
 ;Angel K. Vazquez 802-18-6281
 ;Devan Vazquez 
 ;Bryan Vega
-#include msp430.h                     ; #define controlled include file
+#include "msp430.h"                     ; #define controlled include file
 
         NAME    main                    ; module name
 
