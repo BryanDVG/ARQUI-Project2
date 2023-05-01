@@ -1,8 +1,14 @@
+<<<<<<< HEAD
+
+
+#include "msp430.h"                     ; #define controlled include file
+=======
 ;Integrantes
 ;Angel K. Vazquez 802-18-6281
 ;Devan Vazquez 
 ;Bryan Vega
-#include "msp430.h"                     ; #define controlled include file
+#include msp430.h                     ; #define controlled include file
+>>>>>>> parent of 5e73672 (Fixed minor error in include)
 
         NAME    main                    ; module name
 
@@ -12,13 +18,13 @@
 
   
 
-setUpPorts
-pos1	equ	9      ; Alphanumeric A1 begins at S18
-pos2	equ	5      ; Alphanumeric A2 begins at S10
-pos3 	equ	3      ; Alphanumeric A3 begins at S6
-pos4 	equ	18     ; Alphanumeric A4 begins at S36
-pos5	equ	14     ; Alphanumeric A5 begins at S28
-pos6 	equ	7      ; Alphanumeric A6 begins at S14
+setUpPorts:
+pos1	equ	9      ; Aplhanumeric A1 begins at S18
+pos2	equ	5      ; Aplhanumeric A2 begins at S10
+pos3 	equ	3      ; Aplhanumeric A3 begins at S6
+pos4 	equ	18     ; Aplhanumeric A4 begins at S36
+pos5	equ	14     ; Aplhanumeric A5 begins at S28
+pos6 	equ	7      ; Aplhanumeric A6 begins at S14
 
 origin  equ     0x1C00 ; Start of reserved RAM
 
@@ -44,7 +50,7 @@ letra4L	db 0x00,0x52,0x00,0x00,0x00
            ;  G    U    L   N    N 
 letra5H db 0xBD,0x7C,0x1C,0x6C,0x6C
 letra5L	db 0x00,0x00,0x00,0x82,0x82
-          ;   O    M          
+          ;   O    M   " "  " "  " "
 letra6H db 0xFC,0x6C,0x00,0x00,0x00
 letra6L	db 0x00,0xA0,0x00,0x00,0x00
 ;                  
@@ -67,8 +73,8 @@ intsCounter dw 0
         RSEG    CSTACK                  ; pre-declaration of segment
         RSEG    CODE                    ; place program in 'CODE' segment
     
-init   MOV     #SFE(CSTACK), SP        ; set up stack
-main   NOP
+init:   MOV     #SFE(CSTACK), SP        ; set up stack
+main:   NOP
         MOV.W   #WDTPW+WDTHOLD,&WDTCTL  ; Stop watchdog timer
 
         call    #setupLCD
@@ -81,33 +87,16 @@ main   NOP
         call    #checkPressed
         jmp $
        
-       
-;Objetives This assembly code is for setting up the LCD 
-;Preconditions  None
-;Postconditions After executing this code, the LCD segments 0-21 and 26-43 will
-;be initialized.
-;Author Bryan Vega
-;Date 11abr2023
-setupLCD
+
+setupLCD:
 ;Initialize LCD segments 0 - 21; 26 - 43
 	MOV.W   #0xFFFF,&LCDCPCTL0
 	MOV.W   #0xfc3f,&LCDCPCTL1
     	MOV.W   #0x0fff,&LCDCPCTL2
         ret
-        
-        
-;Objetives To initialize Port 1 and Port 9 for digital input and output. To activate programmable pull-uppull-down resistors on P1.1 and P1.2.
-;Preconditions The microcontroller is powered on.
-;The Port 1 and Port 9 registers are in their default state.
-;Postconditions Port 1.1 and Port 1.2 are configured for input, and all other Port 1 pins are configured for output.
-;All Port 9 pins are configured for output.
-;Programmable pull-uppull-down resistors are activated on Port 1.1 and Port 1.2.
-;The output latch on Port 1.0 and Port 9.7 is cleared
-;Author Bryan Vega
-;Date 11abr2023
-setUpP1
-        bic.b   #0xFF,&P1SEL0           ; Set PxSel0 and PxSel1 to digital IO
-        bic.b   #0xFF,&P1SEL1           ; Digital IO is the default
+setUpP1:
+        bic.b   #0xFF,&P1SEL0           ; Set PxSel0 and PxSel1 to digital I/O
+        bic.b   #0xFF,&P1SEL1           ; Digital I/O is the default
         bic.b   #0xFF,&P9SEL0
         bic.b   #0xFF,&P9SEL1
         
@@ -117,25 +106,14 @@ setUpP1
         bis.b   #0xFF,&P9DIR            ; Set all P9 pins for output
 
         mov.b   #00000110B,&P1REN        ; Activate P1.1 and P1.2 programable
-                                        ; pull-uppull-down resistors
+                                        ; pull-up/pull-down resistors
         bis.b   #00000110B,&P1OUT       ; Set resistors for P1.1 and P1.2 as
                                         ; as pull-down
         bic.b   #0x01,&P1OUT            ; Clear P1.0 and P9.7 output latch to
         bic.b   #0x80,&P9OUT
         ret
 
-
-;Objetives To disable the GPIO power-on default high-impedance mode and 
-;activate previously configured port settings. To initialize the LCD_C controller 
-;for driving a liquid crystal display.
-;Preconditions The microcontroller is powered on.
-;The GPIO power-on default high-impedance mode is enabled
-;Postconditions The GPIO power-on default high-impedance mode is disabled, and previously configured port settings are activated.
-;The LCD_C controller is initialized for driving a liquid crystal display.
-;The LCD is turned on
-;Author Bryan Vega
-;Date 11abr2023
-UnlockGPIO
+UnlockGPIO:
         bic.w   #LOCKLPM5,&PM5CTL0      ; Disable the GPIO power-on default
                                         ; high-impedance mode to activate
                                         ; previously configured port settings
@@ -159,16 +137,7 @@ UnlockGPIO
         MOV.B   #0,R6
         ret
 ;-------------------------------------------------------------------------------
-
-;Objetives  Load test cases into registers and RAM, and initialize some 
-;registers and RAM locations.
-;Preconditions  The system is turned on and the program counter is pointing to 
-;the LoadTestCases subroutine
-;Postconditions The test cases are loaded into registers and RAM, and the 
-;specified registers and RAM locations are initialized to 0
-;Author Devan Vazquez
-;Date 19abr2023
-LoadTestCases
+LoadTestCases:
 ;set registers to 0
 mov.b #0,R10
 mov.b #0,R11
@@ -198,45 +167,45 @@ MOV.b #00000000b, &0x1c0f
 
 ;display hex
 
-MOV.b #00100010b, &0x1c00       ;22     r2-ram3[cch]
-MOV.b #11101001b, &0x1c01       ;e9     out1 -r2
-MOV.b #11001100b, &0x1c02       ;cc     r0-in
+MOV.b #00100010b, &0x1c00       ;22     r2<-ram3[cch]
+MOV.b #11101001b, &0x1c01       ;e9     out1 <-r2
+MOV.b #11001100b, &0x1c02       ;cc     r0<-in
 
 ;Display binary
-MOV.b #00010000b, &0x1c03       ;10     r1-ram1[10h]
-MOV.b #11101000b, &0x1c04       ;e4     out0 -r1
+MOV.b #00010000b, &0x1c03       ;10     r1<-ram1[10h]
+MOV.b #11101000b, &0x1c04       ;e4     out0 <-r1
 
 
 ;display timer
-MOV.b #11001100b, &0x1c05       ;cc     r0-in
-MOV.b #00100011b, &0x1c06       ;22     r2-ram4
-MOV.b #11101010b, &0x1c07       ;ea     out2 -r2
-MOV.b #11001100b, &0x1c08       ;cc     r0-in
+MOV.b #11001100b, &0x1c05       ;cc     r0<-in
+MOV.b #00100011b, &0x1c06       ;22     r2<-ram4
+MOV.b #11101010b, &0x1c07       ;ea     out2 <-r2
+MOV.b #11001100b, &0x1c08       ;cc     r0<-in
 ;display ADD
-MOV.b #10011000b, &0x1c09       ;98     r1-r1[10h]+r2[22h]r1[32h]
+MOV.b #10011000b, &0x1c09       ;98     r1<-r1[10h]+r2[22h]:r1[32h]
 
 ;display NEG
-MOV.b #11000001b, &0x1c0a       ;c1     r1-2s comp of r1[32h]r1[]
+MOV.b #11000001b, &0x1c0a       ;c1     r1<-2s comp of r1[32h]:r1[??]
 
 ;Display SHR
-MOV.b #11000101b, &0x1c0b       ;c6     shr of r1[22h]r1[]
+MOV.b #11000101b, &0x1c0b       ;c6     shr of r1[22h]:r1[??]
 
 
-MOV.b #11101001b, &0x1c0c       ;e9     out1 -r2
-MOV.b #11001100b, &0x1c0d       ;cc     r0-in
+MOV.b #11101001b, &0x1c0c       ;e9     out1 <-r2
+MOV.b #11001100b, &0x1c0d       ;cc     r0<-in
 
 MOV.b #11110000b, &0x1c0e       ;f0     jump to ram1 if r3=0
 
-;MOV.b #5fh, &0x1c01             ;5f     ram16-r1[10h]
-;MOV.b #00100010b, &0x1c02       ;22     r2-ram3[22h]
-;MOV.b #10011000b, &0x1c03       ;98     r1-r1[10h]+r2[22h]r1[32h]
-;MOV.b #11000001b, &0x1c04       ;c1     r1-2s comp of r1[32h]r1[]
-;MOV.b #11000110b, &0x1c05       ;c6     shr of r2[22h]r2[]
-;MOV.b #11001101b, &0x1c06       ;cc     r1-in
-;MOV.b #11101001b, &0x1c07       ;e4     out0 -r1
-;MOV.b #11101001b, &0x1c08       ;e9     out1 -r2
-;MOV.b #11100110b, &0x1c09       ;ea     out2 -r1
-;MOV.b #11101010b, &0x1c0a       ;ea     out2 -r2
+;MOV.b #5fh, &0x1c01             ;5f     ram16<-r1[10h]
+;MOV.b #00100010b, &0x1c02       ;22     r2<-ram3[22h]
+;MOV.b #10011000b, &0x1c03       ;98     r1<-r1[10h]+r2[22h]:r1[32h]
+;MOV.b #11000001b, &0x1c04       ;c1     r1<-2s comp of r1[32h]:r1[??]
+;MOV.b #11000110b, &0x1c05       ;c6     shr of r2[22h]:r2[??]
+;MOV.b #11001101b, &0x1c06       ;cc     r1<-in
+;MOV.b #11101001b, &0x1c07       ;e4     out0 <-r1
+;MOV.b #11101001b, &0x1c08       ;e9     out1 <-r2
+;MOV.b #11100110b, &0x1c09       ;ea     out2 <-r1
+;MOV.b #11101010b, &0x1c0a       ;ea     out2 <-r2
 ;MOV.b #11110000b, &0x1c0b       ;f0     jump to ram1 if r3=0
 ;MOV.b #00000000b, &0x1c0c       ;
 ;MOV.b #00000000b, &0x1c0d       ;
@@ -247,12 +216,12 @@ ret
 
 ;-------------------------------------------------------------------------------
 
-;Objetives Display CPURUM to the LED display
-;Preconditions R14 is not in use.
-;Postconditions Displays CPURUM onto the LED display
-;Author Bryan Vega
-;Date 11abr2023
-titleDisplay
+;Objetives: Display CPURUM to the LED display
+;Preconditions: R14 is not in use.
+;Postconditions: Displays CPURUM onto the LED display
+;Author: Bryan Vega
+;Date: 11/abr/2023
+titleDisplay:
 
         MOV.B   #pos1,R14
         
@@ -285,13 +254,13 @@ titleDisplay
 	MOV.B   #0xA0,0x0a20+1(R14)
         ret
 
-;Objetives Dynamic subroutine to display member names.
-;Preconditions R6 is set to index the proper name, R14 is set to index the proper name
-;Postconditions Displays a member name on to the LED display
-;Author Bryan Vega
-;Date 11abr2023
+;Objetives: Dynamic subroutine to display member names.
+;Preconditions: R6 is set to index the proper name, R14 is set to index the proper name
+;Postconditions: Displays a member name on to the LED display
+;Author: Bryan Vega
+;Date: 11/abr/2023
 
-displayLCD
+displayLCD:
         MOV.W   #2 , &LCDCMEMCTL ;CLEAR LCD
 	;Write Name on display's A1-A6 Alphanumeric chars
         
@@ -339,13 +308,13 @@ displayLCD
         
         jmp     checkPressed
  
-;ObjetivesTo display the S2 To Go message on the LCD screen
-;Preconditions The LCD screen must be properly initialized and configured.
-;Postconditions The message S2 To Go will be displayed on the LCD screen.
-;Author Bryan Vega
-;Date 11abr2023
+;Objetives: Display S2ToGo on LED display
+;Preconditions: 
+;Postconditions: 
+;Author: Bryan Vega
+;Date: 11/abr/2023
 
-s2ToGoDisplay  
+s2ToGoDisplay:  
         mov.b   #0x0000,R6      ; set display setting so s2togo
           
         bis.b   #10000000B,&P9OUT
@@ -380,16 +349,7 @@ s2ToGoDisplay
 	MOV.B   letra6L(R6),0x0a20+1(R14)
         ret
 
-
-;Objetives To check if the S2 button has been pressed and to call the 
-;run_instr subroutine if it has been pressed
-;Preconditions The S2 button must be properly connected to the microcontroller 
-;and the s2ToGoDisplay subroutine must be called to display the S2 To Go 
-;message on the LCD screen
-;Postconditions If the S2 button is pressed, the run_instr subroutine will be called.
-;Author Bryan Vega
-;Date 11abr2023
-s2ToGo
+s2ToGo:
         call    #s2ToGoDisplay
         
         mov.b   &P1IN,R5
@@ -401,18 +361,9 @@ s2ToGo
         
         call    #run_instr              ;As soon as its pressed, call run_instr
         ret
-
-
-;Objetives To continuously poll the S1 and S2 buttons and jump to the 
-;appropriate subroutines when they are pressed
-;Preconditions The S1 and S2 buttons must be properly connected to the 
-;microcontroller
-;Postconditions Depending on which button is pressed, the appropriate 
-;subroutine will be called.
-;Author Bryan Vega
-;Date 11abr2023
+     
 ;Polling loop
-checkPressed
+checkPressed:
         mov.b   &P1IN,R5
         and.b   #00000110B,R5
         ;member names jump
@@ -429,51 +380,31 @@ checkPressed
         
         ret
  
-;Objetives 
-;Preconditions 
-;Postconditions 
-;Author Bryan Vega
-;Date 11abr2023   
-resetName
+ 
+resetName:
         MOV.B   #2,R6
         jmp     checkPressed
 
-;Objetives To delay for a short period of time in order to debounce button inputs
-;Preconditions None
-;Postconditions A short delay will occur
-;Author Bryan Vega
-;Date 11abr2023   
-delay  ;Delay for inputs
+
+delay:  ;Delay for inputs
         mov.w   #0xFFFF,R4 
         jmp     decrement
      
-;Objetives To decrement the R4 register in order to implement a delay
-;Preconditions The R4 register must be properly initialized
-;Postconditions The R4 register will be decremented
-;Author Bryan Vega
-;Date 11abr2023    
-decrement
+     
+decrement:
         dec     R4
         jnz     decrement
         ret
         
-;Objetives  To check if the S1 button has been pressed
-;Preconditions The S1 button must be properly connected to the microcontroller
-;Postconditions  If the S1 button is pressed, the subroutine will return
-;Author Bryan Vega
-;Date 11abr2023
-checkStart
+
+checkStart:
         mov.b   &P1IN,R5
         and.b   #00000110B,R5
         cmp.b   #00000010B,R5
         ret
 
-;Objetives Execute the instructions stored in memory
-;Preconditions  Memory must be properly initialized with instructions
-;Postconditions   All instructions in memory have been executed
-;Author Devan Vazquez
-;Date 19abr2023
-run_instr
+
+run_instr:
         ;Define R7 as the instruction register that holds the instruction, R4 is the counter
         CLR     R10                     ;Clear R10 always
         MOV.B   0(R4), R7               ;Assign R7 the value at R4 address
@@ -489,13 +420,8 @@ run_instr
         MOV.B   #2,R6                   ;set R6 index for member names
         ret              
         
-;Objetives  Decode and execute a single instruction
-;Preconditions R7 contains the instruction to be executed
-;Postconditions  The instruction has been executed, and the appropriate action
-;has been taken based on the instruction type
-;Author Devan Vazquez
-;Date 19abr2023        
-read_instr
+        
+read_instr:
         MOV.B   R7, R8            ; Store entire R7 instruction onto R8, will remain constant
 
 
@@ -564,59 +490,32 @@ read_instr
         ret
         
 ; Methods
-
-; Objectives To calculate the address based on the origin and a given offset
-; Preconditions R8 contains the offset value, origin contains the base address value
-; Postconditions R7 contains the calculated address value
-; Author Devan Vazquez
-; Date 19abr2023
-getAddress
+getAddress:
       
         MOV.B   R8, R7            ; Refresh R7
         BIC.B   #11110000b, R7    ; Select specific bits for address
         ADD.W   #origin, R7       ; Offset the address so it aligns with the RAM
         ret
-
-;Objetives To extract the register bits from an instruction
-;Preconditions R8 contains the instruction value
-;Postconditions  R9 contains the extracted register bits
-;Author Devan Vazquez
-;Date 19abr2023
-getRegister    ;Gets register for certain instructions at (--XX----)
+        
+getRegister:    ;Gets register for certain instructions at (--XX----)
         
         MOV.B   R8, R9            ; Refresh R9
         BIC.B   #11001111b, R9    ; Select specific bits for register
         ret
         
-;Objetives To extract the register bits from an instruction
-;Preconditions R8 contains the instruction value
-;Postconditions  R9 contains the extracted register bits
-;Author Devan Vazquez
-;Date 19abr2023        
-getRegister2    ;Gets register for certain instructions at (----XX--)
+getRegister2:    ;Gets register for certain instructions at (----XX--)
         
         MOV.B   R8, R9            ; Refresh R9
         BIC.B   #11110011b, R9    ; Select specific bits for register
         ret
-
-;Objetives To extract the register bits from an instruction
-;Preconditions R8 contains the instruction value
-;Postconditions  R9 contains the extracted register bits
-;Author Devan Vazquez
-;Date 19abr2023
-getRegister3    ;Gets register for certain instructions at (------XX)
+        
+getRegister3:    ;Gets register for certain instructions at (------XX)
         
         MOV.B   R8, R9            ; Refresh R9
         BIC.B   #11111100b, R9    ; Select specific bits for register
         ret
 
-;Objetives To extract the register value based on the register bits
-;Preconditions None
-;Postconditions R13 contains the register value, or R10-R12 contain 0 if 
-;register bits are not valid 
-;Author Devan Vazquez
-;Date 19abr2023
-getRegisterValue
+getRegisterValue:
         call    #getRegister      ;Load register onto R9
 
         CMP.B   #00000000b, R9  ;Get R10
@@ -633,13 +532,7 @@ getRegisterValue
         
         ret
         
-;Objetives To load a register value onto R9 and determine which register value 
-;needs to be loaded next
-;Preconditions None
-;Postconditions R9 contains the value of the specified register.
-;Author Devan Vazquez
-;Date 19abr2023        
-getRegisterValue2
+getRegisterValue2:
         call    #getRegister2      ;Load register onto R9
 
         CMP     #00000000b, R9  ;Get R10
@@ -655,13 +548,7 @@ getRegisterValue2
         JEQ     exitRegisterValueR13
         
         ret
-        
-;Objetives To load a register value onto R9 and determine which register value needs to be loaded next
-;Preconditions None
-;Postconditions   R9 contains the value of the specified register
-;Author Devan Vazquez
-;Date 19abr2023
-getRegisterValue3
+getRegisterValue3:
         call    #getRegister3      ;Load register onto R9
 
         CMP     #00000000b, R9  ;Get R10
@@ -678,112 +565,63 @@ getRegisterValue3
         
         ret
         
-;Objetives To move the value of R10 to R9.
-;Preconditions None
-;Postconditions  R9 contains the value of R10.
-;Author Devan Vazquez
-;Date 19abr2023
-exitRegisterValueR10
+
+exitRegisterValueR10:
         MOV.B   R10, R9         ;Move R10 to R9
         ret
-        
-;Objetives To move the value of R11 to R9.
-;Preconditions None
-;Postconditions  R9 contains the value of R11.
-;Author Devan Vazquez
-;Date 19abr2023
-exitRegisterValueR11
+exitRegisterValueR11:
         MOV.B   R11, R9         ;Move R11 to R9
         ret
-        
-;Objetives To move the value of R12 to R9.
-;Preconditions None
-;Postconditions  R9 contains the value of R12.
-;Author Devan Vazquez
-;Date 19abr2023
-exitRegisterValueR12
+exitRegisterValueR12:
         MOV.B   R12, R9         ;Move R12 to R9
         ret
-        
-;Objetives To move the value of R13 to R9.
-;Preconditions None
-;Postconditions  R9 contains the value of R13.
-;Author Devan Vazquez
-;Date 19abr2023
-exitRegisterValueR13
+exitRegisterValueR13:
         MOV.B   R13, R9         ;Move R13 to R9
         ret
-        
-
-;Objetives Load a specific register with the value from memory pointed to by R7
-;Preconditions Memory location pointed to by R7 should contain a valid value.
-;Postconditions The specified register is loaded with the value from memory.
-;Author Devan Vazquez
-;Date 19abr2023
 ; Register load methods
-loadR10
+loadR10:
         MOV.B   @0(R7), R10   
         ret
-loadR11
+loadR11:
         MOV.B   @0(R7), R11 
         ret
-loadR12
+loadR12:
         MOV.B   @0(R7), R12 
         ret
-loadR13
+loadR13:
         MOV.B   @0(R7), R13 
         ret
-
-;Objetives 
-;Preconditions 
-;Postconditions 
-;Author Devan Vazquez
-;Date 19abr2023
+    
 ; Register Store methods
-storeR10
+storeR10:
         MOV.B   R10, 0(R7)         ;Store the value inside the register onto the address
         ret
-storeR11
+storeR11:
         MOV.B   R11, 0(R7)         ;Store the value inside the register onto the address
         ret
-storeR12
+storeR12:
         MOV.B   R12, 0(R7)         ;Store the value inside the register onto the address
         ret       
-storeR13
+storeR13:
         MOV.B   R13, 0(R7)         ;Store the value inside the register onto the address
         ret
-        
-;Objetives The objective of these subroutines is to store the value of the 
-;specified register onto the memory location pointed to by the stack pointer
-;Preconditions The stack pointer must point to a valid memory location to store 
-;the register value. The register whose value needs to be stored must contain a valid value.
-;Postconditions  The value of the specified register is stored onto the memory 
-;location pointed to by the stack pointer. The stack pointer remains unchanged.
-;Author Devan Vazquez
-;Date 19abr2023
 ; Register Set methods
 
-setR10
+setR10:
         MOV.B   R9, R10   
         ret
-setR11
+setR11:
         MOV.B   R9, R11 
         ret
-setR12
+setR12:
         MOV.B   R9, R12 
         ret
-setR13
+setR13:
         MOV.B   R9, R13 
         ret
-
-;Objective Load a value from memory onto a specified register.
-;PreconditionsThe memory address to load from and the register to load the 
-;value into must be provided
-;Postconditions The specified register will hold the value loaded from memory.
-;Author Devan Vazquez
-;Date 19abr2023
-;Instruction Sets, R8 holds instruction
-load
+        
+; Instruction Sets, R8 holds instruction
+load:
 
         call    #getAddress     ;Load address onto R7
         call    #getRegister    ;Load register onto R9
@@ -803,14 +641,7 @@ load
         
         ret
 
-;Objective Store a value from a specified register onto a memory address.
-;PreconditionsThe memory address to store onto and the register containing the 
-;value to be stored must be provided.
-;Postconditions;The specified memory address will hold the value from the 
-;specified register.
-;Author Devan Vazquez
-;Date 19abr2023
-store
+store:
         call    #getAddress     ;Load address onto R7
         call    #getRegister    ;Load register onto R9
         
@@ -830,17 +661,17 @@ store
         ret
 
 
-;Objetives Add the value of two registers and store the result in the 
+;Objetives: Add the value of two registers and store the result in the 
 ;           destination register.
-;Preconditions The input registers and destination register must be 
+;Preconditions: The input registers and destination register must be 
 ;               initialized with valid values before calling the subroutine. 
-;Postconditions After the subroutine executes, the value in the destination 
+;Postconditions: After the subroutine executes, the value in the destination 
 ;                register will be the sum of the values in the two input 
 ;                registers, and the program will return to the calling point. 
-;Authors Angel K. Vazquez Sanchez, Devan A. Vazquez Rivera
-;Date 12abr2023
+;Authors: Angel K. Vazquez Sanchez, Devan A. Vazquez Rivera
+;Date: 12/abr/2023
 
-sum
+sum:
         ;Get value R[dd]
         call    #getRegisterValue
         ;Get value R[SS]
@@ -864,16 +695,8 @@ sum
         CMP     #00110000b, R5  ;set onto R13
         JEQ     setR13
         ret
-
-
-;Objective Negates the value stored in the register R[SS] using two's 
-;complement and stores it in another register.
-;Precondition R[SS] has a value.
-;Postconditions; The negation of the value in R[SS] using two's complement is 
-;stored in R10-R13.
-;Author Devan Vazquez
-;Date 19abr2023
-negate
+        
+negate:
        
         call    #getRegister3         ;Get register instruction value and store in R9
         MOV.B   R9, R5               ;Store R9 register instruction value onto R5
@@ -897,16 +720,8 @@ negate
         CMP     #00000011b, R5  ;set onto R13
         JEQ     setR13
         
-        ret  
-        
-;Objective Shifts the value stored in the register R[SS] one space to the 
-;right and stores it in another register.
-;Preconditions  R[SS] has a value
-;Postconditions The value in R[SS] is shifted one space to the right and 
-;stored in R10-R13.
-;Author Devan Vazquez
-;Date 19abr2023
-shift
+        ret     
+shift:
         
         call    #getRegister3         ;Get register instruction value and store in R9
         MOV.B   R9, R5               ;Store R9 register instruction value onto R5    
@@ -929,14 +744,8 @@ shift
         JEQ     setR13
         
         ret   
-
-;Objective Gets an input value from either s1, s2, both s1 and s2, or neither 
-;s1 nor s2, and stores it in a designated register.
-;Preconditions The user has input a value using the buttons s1 and s2.
-;Postconditions The value inputted by the user is stored in R10-R13.
-;Author Devan Vazquez
-;Date 19abr2023
-in     
+ 
+in:     
         ;ENABLE R
         CLR R15
         MOV.B   #00000010b,0x0a22(R15)
@@ -948,7 +757,7 @@ in
         call    #delay_ms                ;Delay for 3 seconds
         nop
         ;Clear R
-        in_continue
+        in_continue:
             CLR R15
             MOV.B   #00000000b,0x0a22(R15)
             ;-----------
@@ -966,20 +775,20 @@ in
             JEQ     for00                  ;move 00 in R[dd]
             
             ;move input val into temp register (R5)
-            for00
+            for00:
                     mov.b   #00b,R5
                     jmp     regSelect
-            for01
+            for01:
                     mov.b   #01b,R5
                     jmp     regSelect
-            for10
+            for10:
                     mov.b   #10b,R5
                     jmp     regSelect        
-            for11
+            for11:
                     mov.b   #11b,R5
                     jmp     regSelect       
                     ;move temp register into R[dd]
-            regSelect     
+            regSelect:     
                     
                     call    #getRegister3       ;Get value R[dd], stored in R9
 
@@ -995,33 +804,28 @@ in
                     ret
                     ;moves input val to designated register
          
-            forr0
+            forr0:
                   mov.b R5,R10      ;moves input to register
                   ret               ;done
-            forr1
+            forr1:
                   mov.b R5,R11      ;moves input to register
                   ret               ;done
-            forr2
+            forr2:
                   mov.b R6,R12      ;moves input to register
                   ret               ;done
-            forr3
+            forr3:
                   mov.b R5,R13      ;moves input to register
                   ret               ;done
                
-;Objectives Converts a value stored in a register into either binary, hex, or 
-;decimal representation and outputs it.  
-;Preconditions The value is stored in a designated register.
-;Postconditions The value is outputted in the desired representation
-;Author Devan Vazquez
-;Date 19abr2023
-out
-        ;Output[aa] - R[ss]
-        ;Outputs
-        ; 00 - Binary representation - iterate through binary values, have an array that represents the addresses to set, index them accordingly
-        ; 01 - Hex represenation     - have an array that represents all the values from 0-f, first 8 bits of the word represent the first hex value, and next 8 bits represent the second hex value
-        ;                                mask the value and assign to a specified Hex value (16 of them  or 5 if including decimal), have an array that links the hex value to their output
+             
+out:
+        ;Output[aa] <- R[ss]
+        ;Outputs:
+        ; 00 -> Binary representation -> iterate through binary values, have an array that represents the addresses to set, index them accordingly
+        ; 01 -> Hex represenation     -> have an array that represents all the values from 0-f, first 8 bits of the word represent the first hex value, and next 8 bits represent the second hex value
+        ;                                mask the value and assign to a specified Hex value (16 of them / or 5 if including decimal), have an array that links the hex value to their output
 
-        ; 10 - decimal represenation - convert hex value into 'decimal' value (will still be considered hex, but if intepreted bit by bit, it should act the same as decimal).
+        ; 10 -> decimal represenation -> convert hex value into 'decimal' value (will still be considered hex, but if intepreted bit by bit, it should act the same as decimal).
         ;                                iterate through the values, index it with the table and output it
         
         call   #getRegister3         ;Get register instruction value and store in R9
@@ -1036,32 +840,29 @@ out
         jeq     decimalDisplay
         ret
         
-;Objetives Jump to the indicated address if the value of R3 is zero.
-;Preconditions R3 contains a value to compare with zero, and aaaa represents 
+;Objetives: Jump to the indicated address if the value of R3 is zero.
+;Preconditions: R3 contains a value to compare with zero, and "aaaa" represents 
 ;               the destination address.
-;Postconditions If the value of R3 is zero, the program counter (PC) is set to 
+;Postconditions: If the value of R3 is zero, the program counter (PC) is set to 
 ;                the indicated address; otherwise, the subroutine returns 
 ;                without changing the PC.
-;Author Angel K. Vazquez Sanchez, Devan A. Vazquez Rivera
-;Date 11abr2023
+;Author: Angel K. Vazquez Sanchez, Devan A. Vazquez Rivera
+;Date: 11/abr/2023
  
-JR30   
+JR30:   
         call    #getAddress         ;Load address onto R7
 
         CMP     #0, R13             ;Compare the value of R13 with zero
         JNZ     exitJR30           ;If the R3 is not zero, skip jmp instr.
         SUB.W   #1, R7              ;Offset the address by -1, because PC is updated right after this is executed
         MOV     R7, R4              ;Move to address 'aaaa', PC in this context is R4 
-exitJR30
+exitJR30:
         ret
         
-;Objective Provide a delay of 3 seconds
-;Preconditions None
-;Postconditions The program will be delayed by 3 seconds
-;Author Devan Vazquez
-;Date 19abr2023
+
+
 ; Delays
-delay_ms
+delay_ms:
     mov     #0, intsCounter                   ;Clear intsCounter
     mov.w   #DELAY_TIME, R15                  ; Load delay time into register
 
@@ -1072,11 +873,11 @@ delay_ms
     mov.w   R15, &TA0CCR0                     ; Set timer period for 3 second delay
 
     ; Wait for 3 seconds
-    waitLoop
+    waitLoop:
         bit.w   #CCIFG, &TA0CCTL0  ; Check timer interrupt flag
         jnz     endloop            ; Exit loop if flag is set
         jmp     waitLoop               ; Continue looping
-    endloop
+    endloop:
 
       bic.w     #CCIFG, &TA0CCTL0     ; Clear timer interrupt flag
       
@@ -1086,12 +887,8 @@ delay_ms
       
       ret
       
-;Objective Provide a delay of 0.1 seconds
-;Preconditions None
-;Postconditions The program will be delayed by 0.1 seconds
-;Author Devan Vazquez
-;Date 19abr2023      
-delay1s        ;0.1s delay for sub out 3 (decrements)
+      
+delay1s:        ;0.1s delay for sub out 3 (decrements)
     mov     #0, intsCounter                     ;Clear timerCount
     mov.w   #12500, R5                         ; Load delay time into register
 ; Initialize Timer_A0 module
@@ -1101,11 +898,11 @@ delay1s        ;0.1s delay for sub out 3 (decrements)
     mov.w   R5, &TA0CCR0                        ; Set timer period for .1 second delay
 
     ; Wait for 0.1 seconds
-    timeloopB
+    timeloopB:
         bit.w   #CCIFG, &TA0CCTL0               ; Check timer interrupt flag
         jnz     endloopB                        ; Exit loop if flag is set
         jmp     timeloopB                       ; Continue looping
-    endloopB
+    endloopB:
 
       bic.w     #CCIFG, &TA0CCTL0               ; Clear timer interrupt flag
       
@@ -1114,14 +911,9 @@ delay1s        ;0.1s delay for sub out 3 (decrements)
       jne       timeloopB
       
       ret  
-
-;Objective Display a hexadecimal value on an LCD screen
-;PreconditionsThe hexadecimal value to be displayed must be stored in register R15
-;PostconditionsThe hexadecimal value will be displayed on the LCD screen
-;Author Devan Vazquez
-;Date 19abr2023
+      
 ;LCD out methods
-hexDisplay 
+hexDisplay: 
     
     ;call   #extractRA ;stored in R15
     call   #getRegisterValue2           ;get register value, stored to R9
@@ -1145,13 +937,8 @@ hexDisplay
     mov.b   hexTop(R9), &0xA2E
     mov.b   hexLow(R9), &0xA2F
     ret
-
-;ObjectiveThis subroutine displays a hexadecimal value on an LED display.
-;PreconditionsThe hexadecimal value to be displayed is stored in a register.
-;Postconditions The hexadecimal value is displayed on an LED display.
-;Author Devan Vazquez
-;Date 19abr2023
-ledDisplay
+    
+ledDisplay:
     call    #getRegisterValue2  ;store in r9
     mov.b  R9, R15              ;re-store to r15
     
@@ -1224,24 +1011,11 @@ ledDisplay
     mov.b   R9, &0xA2D
     ret
 
-;Objective This subroutine displays a decimal value on an LCD display.
-;PreconditionsThe decimal value to be displayed is stored in a register.
-;PostconditionsThe decimal value is displayed on an LCD display.
-;Author Devan Vazquez
-;Date 19abr2023
-decimalDisplay
+decimalDisplay:
     call   #getRegisterValue2
     MOV.W   #2 , &LCDCMEMCTL ;CLEAR LCD
     mov.b  R9, R15
-    
-;ObjectiveThis subroutine continuously displays a decimal value on an LCD 
-;display until it reaches 0.
-;PreconditionsThe decimal value to be displayed is stored in a register
-;PostconditionsThe decimal value is continuously displayed on an LCD display 
-;until it reaches 0.
-;Author Devan Vazquez
-;Date 19abr2023
-decimalDisplayLoop
+decimalDisplayLoop:
 
      call #decimalConverter
      
@@ -1256,28 +1030,14 @@ decimalDisplayLoop
      cmp   #0, R15
      jc    decimalDisplayLoop
      ret
-fin 
+fin: 
      ret
-     
-;ObjectiveConvert a decimal value to a hexadecimal value for display on an 
-;LCD screen.
-;Precondition; Decimal value stored in R15
-;PostconditionsHexadecimal value displayed on LCD screen
-;AuthorDevan Vazquez
-;Date 19abr2022
-decimalConverter
+decimalConverter:
     push.b  R15
     mov.b  #0, R6
     mov.b  #0, R9
     mov.b  #0, R14
-    
-;ObjectiveLoop through the decimalConverter subroutine until the decimal value 
-;has been fully converted to hexadecimal.
-;Precondition;R15 contains the decimal value to be converted
-;PostconditionsThe hexadecimal value is displayed on the LCD screen.
-;AuthorDevan Vazquez
-;Date 19abr2022
-loop
+loop:
     cmp    #100, R15
     jc     sub100
     cmp    #10, R15
@@ -1291,39 +1051,15 @@ loop
     mov.b  #00000001b,  &0xA26
     pop.b  R15
     ret
-    
-;ObjectiveDetermine the value of the most significant digit (hundreds) of the 
-;decimal number and convert it to hexadecimal.
-;Precondition;R15 contains a decimal value greater than or equal to 100
-;Postconditions R15 is decremented by 100 and the most significant digit is 
-;stored in hex format at &0xA29.
-;AuthorDevan Vazquez
-;Date 19abr2022
-sub100
+sub100:
     sub.b  #100, R15
     inc  R6
     jmp loop
-
-;ObjectiveDetermine the value of the second digit (tens) of the decimal number 
-;and convert it to hexadecimal.
-;Precondition; R15 contains a decimal value between 10 and 99.
-;Postconditions R15 is decremented by 10 and the second digit is stored in hex 
-;format at &0xA25.
-;AuthorDevan Vazquez
-;Date 19abr2022
-sub10
+sub10:
     sub.b  #10, R15
     inc R9
     jmp loop
-
-;ObjectiveDetermine the value of the least significant digit (ones) of the 
-;decimal number and convert it to hexadecimal.
-;Precondition;R15 contains a decimal value between 1 and 9
-;PostconditionsR15 is decremented by 1 and the least significant digit is 
-;stored in hex format at &0xA23.
-;AuthorDevan Vazquez
-;Date 19abr2022
-sub1
+sub1:
     sub.b  #1, R15
     inc R14
     jmp loop
